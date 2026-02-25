@@ -134,7 +134,7 @@ const InvoiceActions = ({ invoice, onInvoiceUpdated, onInvoiceDeleted, onViewDet
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (response.data.pdf_url) {
-                window.open(`http://localhost:5000${response.data.pdf_url}`, '_blank');
+                window.open(response.data.pdf_url, '_blank');
             } else {
                 addToast('PDF generation failed', 'error');
             }

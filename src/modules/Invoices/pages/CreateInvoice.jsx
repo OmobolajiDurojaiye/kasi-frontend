@@ -127,7 +127,7 @@ const CreateInvoice = () => {
                         
                         {successData.pdf_url && (
                              <a 
-                                href={`http://localhost:5000${successData.pdf_url}`} 
+                                href={successData.pdf_url} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 className="block w-full"

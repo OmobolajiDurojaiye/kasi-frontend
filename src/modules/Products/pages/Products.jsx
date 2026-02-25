@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
 import { ProductGridSkeleton } from '../../../components/ui/Skeleton';
+import DeleteConfirmModal from '../../../components/ui/DeleteConfirmModal';
 
 const Products = () => {
   const { token } = useAuth();
@@ -13,6 +14,16 @@ const Products = () => {
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [form, setForm] = useState({
+    name: '',
+    description: '',
+    price: '',
+    min_price: '',
+    in_stock: true,
+  });
 
   const headers = { Authorization: `Bearer ${token}` };
 
@@ -22,9 +33,11 @@ const Products = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get('/api/products/', { headers });
+      // Add a timestamp to prevent browser caching
+      const res = await axios.get(`/api/products/?t=${Date.now()}`, { headers });
       setProducts(res.data);
-    } catch {
+    } catch (err) {
+      console.error('Fetch products error:', err);
       showToast('Failed to load products', 'error');
     } finally {
       setLoading(false);
@@ -48,8 +61,10 @@ const Products = () => {
         await axios.post('/api/products/', form, { headers });
         showToast('Product added!', 'success');
       }
-      fetchProducts();
+      // Close modal IMMEDIATELY for snappy feel
       resetForm();
+      // Refresh list in background
+      fetchProducts();
     } catch (err) {
       console.error('Submit error:', err);
       showToast('Failed to save product', 'error');
@@ -70,14 +85,22 @@ const Products = () => {
     setShowModal(true);
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm('Delete this product?')) return;
+  const handleDeleteClick = (product) => {
+    setDeletingId(product.id);
+  };
+
+  const confirmDelete = async () => {
+    if (!deletingId) return;
+    setIsDeleting(true);
     try {
-      await axios.delete(`/api/products/${id}`, { headers });
+      await axios.delete(`/api/products/${deletingId}`, { headers });
       showToast('Product deleted', 'success');
       fetchProducts();
     } catch {
       showToast('Failed to delete', 'error');
+    } finally {
+      setIsDeleting(false);
+      setDeletingId(null);
     }
   };
 
@@ -203,7 +226,7 @@ const Products = () => {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDelete(product.id)}
+                    onClick={() => handleDeleteClick(product)}
                     className="flex items-center gap-1 text-xs text-gray-500 hover:text-red-600 transition-colors ml-auto"
                   >
                     <Trash2 size={13} />
@@ -326,6 +349,15 @@ const Products = () => {
           </div>
         </div>
       )}
+      {/* Delete Confirmation */}
+      <DeleteConfirmModal
+        isOpen={!!deletingId}
+        onClose={() => setDeletingId(null)}
+        onConfirm={confirmDelete}
+        loading={isDeleting}
+        title="Delete Product?"
+        message="Are you sure you want to remove this product from your catalog? This will also affect the AI assistant's ability to answer questions about it."
+      />
     </div>
   );
 };

@@ -7,7 +7,7 @@ import WebhookSimulator from '../../DevTools/WebhookSimulator';
 
 const Integrations = () => {
   const { token } = useAuth();
-  const { showToast } = useToast();
+  const { addToast } = useToast();
   const headers = { Authorization: `Bearer ${token}` };
 
   // Telegram state
@@ -33,7 +33,7 @@ const Integrations = () => {
 
   const connectTelegram = async () => {
     if (!botToken.trim()) {
-      showToast('Please enter your bot token', 'error');
+      addToast('Please enter your bot token', 'error');
       return;
     }
     setConnecting(true);
@@ -41,10 +41,10 @@ const Integrations = () => {
       const res = await axios.post('/api/telegram/connect', { bot_token: botToken.trim() }, { headers });
       setTelegramStatus({ connected: true, bot: res.data.bot });
       setBotToken('');
-      showToast('Telegram bot connected! 🎉', 'success');
+      addToast('Telegram bot connected! 🎉', 'success');
     } catch (err) {
       const msg = err.response?.data?.error || 'Failed to connect';
-      showToast(msg, 'error');
+      addToast(msg, 'error');
     } finally {
       setConnecting(false);
     }
@@ -55,9 +55,9 @@ const Integrations = () => {
     try {
       await axios.delete('/api/telegram/disconnect', { headers });
       setTelegramStatus({ connected: false, bot: null });
-      showToast('Bot disconnected', 'success');
+      addToast('Bot disconnected', 'success');
     } catch {
-      showToast('Failed to disconnect', 'error');
+      addToast('Failed to disconnect', 'error');
     }
   };
 

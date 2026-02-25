@@ -8,7 +8,7 @@ import DeleteConfirmModal from '../../../components/ui/DeleteConfirmModal';
 
 const Products = () => {
   const { token } = useAuth();
-  const { showToast } = useToast();
+  const { addToast } = useToast();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -38,7 +38,7 @@ const Products = () => {
       setProducts(res.data);
     } catch (err) {
       console.error('Fetch products error:', err);
-      showToast('Failed to load products', 'error');
+      addToast('Failed to load products', 'error');
     } finally {
       setLoading(false);
     }
@@ -56,10 +56,10 @@ const Products = () => {
     try {
       if (editing) {
         await axios.patch(`/api/products/${editing}`, form, { headers });
-        showToast('Product updated!', 'success');
+        addToast('Product updated!', 'success');
       } else {
         await axios.post('/api/products/', form, { headers });
-        showToast('Product added!', 'success');
+        addToast('Product added!', 'success');
       }
       // Close modal IMMEDIATELY for snappy feel
       resetForm();
@@ -67,7 +67,7 @@ const Products = () => {
       fetchProducts();
     } catch (err) {
       console.error('Submit error:', err);
-      showToast('Failed to save product', 'error');
+      addToast('Failed to save product', 'error');
     } finally {
       setSubmitting(false);
     }
@@ -94,10 +94,10 @@ const Products = () => {
     setIsDeleting(true);
     try {
       await axios.delete(`/api/products/${deletingId}`, { headers });
-      showToast('Product deleted', 'success');
+      addToast('Product deleted', 'success');
       fetchProducts();
     } catch {
-      showToast('Failed to delete', 'error');
+      addToast('Failed to delete', 'error');
     } finally {
       setIsDeleting(false);
       setDeletingId(null);
@@ -112,10 +112,10 @@ const Products = () => {
       await axios.post(`/api/products/${productId}/image`, formData, {
         headers: { ...headers, 'Content-Type': 'multipart/form-data' },
       });
-      showToast('Image uploaded!', 'success');
+      addToast('Image uploaded!', 'success');
       fetchProducts();
     } catch {
-      showToast('Failed to upload image', 'error');
+      addToast('Failed to upload image', 'error');
     } finally {
       setUploading(false);
     }

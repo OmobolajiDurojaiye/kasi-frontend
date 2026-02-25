@@ -12,14 +12,7 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const [form, setForm] = useState({
-    name: '',
-    description: '',
-    price: '',
-    min_price: '',
-    in_stock: true,
-  });
+  const [submitting, setSubmitting] = useState(false);
 
   const headers = { Authorization: `Bearer ${token}` };
 
@@ -46,6 +39,7 @@ const Products = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
     try {
       if (editing) {
         await axios.patch(`/api/products/${editing}`, form, { headers });
@@ -54,10 +48,13 @@ const Products = () => {
         await axios.post('/api/products/', form, { headers });
         showToast('Product added!', 'success');
       }
-      resetForm();
       fetchProducts();
-    } catch {
+      resetForm();
+    } catch (err) {
+      console.error('Submit error:', err);
       showToast('Failed to save product', 'error');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -312,9 +309,17 @@ const Products = () => {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2.5 bg-primary text-white rounded-xl text-sm font-medium hover:bg-green-700 transition-colors"
+                  disabled={submitting}
+                  className="flex-1 px-4 py-2.5 bg-primary text-white rounded-xl text-sm font-medium hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  {editing ? 'Update' : 'Add Product'}
+                  {submitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    editing ? 'Update' : 'Add Product'
+                  )}
                 </button>
               </div>
             </form>

@@ -169,12 +169,21 @@ const CreateInvoice = () => {
                        Save Draft
                     </Button>
                     <Button 
-                        className="flex items-center gap-2 bg-primary hover:bg-green-700 text-white"
+                        className="flex items-center gap-2 bg-primary hover:bg-green-700 text-white min-w-[140px] justify-center"
                         onClick={() => handleSave('Sent')}
                         disabled={loading}
                     >
-                        <Share2 size={18} />
-                        Save & Share
+                        {loading ? (
+                            <>
+                                <Loader size={18} className="animate-spin" />
+                                Saving...
+                            </>
+                        ) : (
+                            <>
+                                <Share2 size={18} />
+                                Save & Share
+                            </>
+                        )}
                     </Button>
                 </div>
             </div>

@@ -22,7 +22,7 @@ const ChartsSection = ({ cashflowData, invoiceData }) => {
             <h3 className="text-base font-bold text-dark">Cashflow summary</h3>
             <span className="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded-md">Last 6 Months</span>
         </div>
-        <div className="h-64 w-full" style={{ width: '100%', height: 220 }}>
+        <div className="h-64 w-full min-h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={cashflowData}>
                     <defs>
@@ -47,7 +47,7 @@ const ChartsSection = ({ cashflowData, invoiceData }) => {
             <h3 className="text-base font-bold text-dark">Invoice by Amount</h3>
             <span className="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded-md">Last 6 Months</span>
         </div>
-        <div className="h-64 w-full" style={{ width: '100%', height: 220 }}>
+        <div className="h-64 w-full min-h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={invoiceData} barSize={40}>
                     <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#F3F4F6" />

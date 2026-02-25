@@ -4,12 +4,14 @@ import { LayoutDashboard, FileText, CreditCard, Users, Settings, HelpCircle, Log
 import clsx from 'clsx';
 import { useLayout } from '../../context/LayoutContext';
 import { useTheme } from '../../context/ThemeContext';
+import { useAuth } from '../../context/AuthContext';
 
 const SIDEBAR_KEY = 'bfm-sidebar-collapsed';
 
 const Sidebar = ({ onWidthChange }) => {
   const { toggleLayout } = useLayout();
   const { isDark, toggleTheme } = useTheme();
+  const { logout } = useAuth();
   const [collapsed, setCollapsed] = useState(() => {
     try { return localStorage.getItem(SIDEBAR_KEY) === 'true'; } catch { return false; }
   });
@@ -45,13 +47,13 @@ const Sidebar = ({ onWidthChange }) => {
         {/* Header */}
         <div className={clsx('flex items-center mb-6', collapsed ? 'justify-center' : 'justify-between px-2')}>
           {!collapsed && (
-            <div className="text-xl font-bold text-dark flex items-center gap-2">
-              <span className="text-primary text-2xl">❁</span>
-              BFM
+            <div className="flex items-center gap-2">
+              <img src="/logo.png" alt="Kasi" className="w-7 h-7 rounded-lg" />
+              <span className="text-xl font-extrabold tracking-tight" style={{ background: 'linear-gradient(135deg, #0F8C55, #0BBF6A)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>kasi</span>
             </div>
           )}
           {collapsed && (
-            <span className="text-primary text-2xl">❁</span>
+            <img src="/logo.png" alt="K" className="w-7 h-7 rounded-lg" />
           )}
         </div>
 
@@ -112,6 +114,7 @@ const Sidebar = ({ onWidthChange }) => {
             'flex items-center w-full text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 font-medium text-sm',
             collapsed ? 'justify-center py-2.5' : 'gap-3 px-3 py-2.5'
           )}
+          onClick={logout}
           title={collapsed ? 'Logout' : undefined}
         >
           <LogOut size={18} />

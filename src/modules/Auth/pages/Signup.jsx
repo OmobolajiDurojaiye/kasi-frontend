@@ -31,9 +31,7 @@ const Signup = () => {
       <div className="min-h-screen bg-bg-main flex items-center justify-center p-4">
         <Card className="w-full max-w-md p-8">
           <div className="text-center mb-8">
-              <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <span className="text-white font-bold text-2xl">F</span>
-              </div>
+              <img src="/logo.png" alt="Kasi" className="w-12 h-12 rounded-xl mx-auto mb-4" />
               <h1 className="text-2xl font-bold text-dark">Create an account</h1>
               <p className="text-gray-500 mt-2">Start managing your business professionally.</p>
           </div>

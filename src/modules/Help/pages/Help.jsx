@@ -58,7 +58,7 @@ const Help = () => {
                     />
                     <FaqItem 
                         question="Can I customize the invoice colors?" 
-                        answer="Currently, invoices use the standard BizFlow premium design. Advanced customization is coming in the Pro plan." 
+                        answer="Currently, invoices use the standard Kasi premium design. Advanced customization is coming in the Pro plan." 
                     />
                     <FaqItem 
                         question="Is my data secure?" 
@@ -75,7 +75,7 @@ const Help = () => {
                     </div>
                     <div>
                         <h3 className="text-lg font-bold">Read the Documentation</h3>
-                        <p className="text-gray-400 text-sm">Detailed guides on using BizFlow.</p>
+                        <p className="text-gray-400 text-sm">Detailed guides on using Kasi.</p>
                     </div>
                 </div>
                 

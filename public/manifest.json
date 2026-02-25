@@ -1,7 +1,7 @@
 {
-  "name": "BizFlow",
-  "short_name": "BFM",
-  "description": "Manage invoices, sales, and payments for your business.",
+  "name": "Kasi",
+  "short_name": "Kasi",
+  "description": "AI-powered sales assistant. Manage invoices, sales, and payments for your business.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -9,9 +9,9 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/vite.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]

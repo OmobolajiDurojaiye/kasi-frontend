@@ -4,10 +4,12 @@ import { LayoutDashboard, FileText, CreditCard, Users, Settings, HelpCircle, Log
 import clsx from 'clsx';
 import { useLayout } from '../../context/LayoutContext';
 import { useTheme } from '../../context/ThemeContext';
+import { useAuth } from '../../context/AuthContext';
 
 const TopBar = () => {
   const { toggleLayout } = useLayout();
   const { isDark, toggleTheme } = useTheme();
+  const { logout } = useAuth();
 
   const navItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
@@ -27,8 +29,8 @@ const TopBar = () => {
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <div className="flex items-center gap-2 shrink-0">
-            <span className="text-primary text-2xl">❁</span>
-            <span className="text-lg font-bold text-dark">BFM</span>
+            <img src="/logo.png" alt="Kasi" className="w-7 h-7 rounded-lg" />
+            <span className="text-lg font-extrabold tracking-tight" style={{ background: 'linear-gradient(135deg, #0F8C55, #0BBF6A)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>kasi</span>
           </div>
 
           {/* Desktop nav */}
@@ -72,7 +74,7 @@ const TopBar = () => {
               <PanelLeft size={16} />
             </button>
 
-            <button className="flex items-center gap-1.5 px-3 py-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-md transition-all duration-200 font-medium text-[13px]">
+            <button onClick={logout} className="flex items-center gap-1.5 px-3 py-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-md transition-all duration-200 font-medium text-[13px]">
               <LogOut size={15} />
               <span>Logout</span>
             </button>

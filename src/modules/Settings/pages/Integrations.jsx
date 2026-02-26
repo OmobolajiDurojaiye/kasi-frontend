@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MessageCircle, Send, Instagram, CheckCircle, XCircle, ExternalLink, Copy, Loader2 } from 'lucide-react';
-import axios from 'axios';
+import api from '../../../api/axios';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
 import WebhookSimulator from '../../DevTools/WebhookSimulator';
@@ -8,7 +8,6 @@ import WebhookSimulator from '../../DevTools/WebhookSimulator';
 const Integrations = () => {
   const { token } = useAuth();
   const { addToast } = useToast();
-  const headers = { Authorization: `Bearer ${token}` };
 
   // Telegram state
   const [telegramStatus, setTelegramStatus] = useState({ connected: false, bot: null });
@@ -22,7 +21,7 @@ const Integrations = () => {
 
   const fetchTelegramStatus = async () => {
     try {
-      const res = await axios.get('/api/telegram/status', { headers });
+      const res = await api.get('/api/telegram/status');
       setTelegramStatus(res.data);
     } catch {
       // not connected
@@ -38,7 +37,7 @@ const Integrations = () => {
     }
     setConnecting(true);
     try {
-      const res = await axios.post('/api/telegram/connect', { bot_token: botToken.trim() }, { headers });
+      const res = await api.post('/api/telegram/connect', { bot_token: botToken.trim() });
       setTelegramStatus({ connected: true, bot: res.data.bot });
       setBotToken('');
       addToast('Telegram bot connected! 🎉', 'success');
@@ -53,7 +52,7 @@ const Integrations = () => {
   const disconnectTelegram = async () => {
     if (!confirm('Disconnect your Telegram bot?')) return;
     try {
-      await axios.delete('/api/telegram/disconnect', { headers });
+      await api.delete('/api/telegram/disconnect');
       setTelegramStatus({ connected: false, bot: null });
       addToast('Bot disconnected', 'success');
     } catch {

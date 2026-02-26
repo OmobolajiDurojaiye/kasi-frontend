@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import api from '../api/axios';
 
 const AuthContext = createContext(null);
 
@@ -10,14 +11,10 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       // Validate token and get user info
-      fetch('/api/auth/me', {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      api.get('/api/auth/me')
       .then(res => {
-        if (res.ok) return res.json();
-        throw new Error('Invalid token');
+        setUser(res.data);
       })
-      .then(userData => setUser(userData))
       .catch(() => logout())
       .finally(() => setLoading(false));
     } else {
@@ -26,31 +23,32 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   const login = async (email, password) => {
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-    
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message);
-    
-    localStorage.setItem('token', data.access_token);
-    setToken(data.access_token);
-    setUser(data.user);
-    return data.user;
+    try {
+      const res = await api.post('/api/auth/login', { email, password });
+      const data = res.data;
+      
+      localStorage.setItem('token', data.access_token);
+      setToken(data.access_token);
+      setUser(data.user);
+      return data.user;
+    } catch (error) {
+      const message = error.response?.data?.message || 'Login failed';
+      throw new Error(message);
+    }
   };
 
   const signup = async (businessName, email, password) => {
-    const res = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ business_name: businessName, email, password }),
-    });
-    
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message);
-    return data;
+    try {
+      const res = await api.post('/api/auth/register', { 
+        business_name: businessName, 
+        email, 
+        password 
+      });
+      return res.data;
+    } catch (error) {
+      const message = error.response?.data?.message || 'Signup failed';
+      throw new Error(message);
+    }
   };
 
   const logout = () => {

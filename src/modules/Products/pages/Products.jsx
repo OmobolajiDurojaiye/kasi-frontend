@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Package, Plus, Pencil, Trash2, X, Upload, ImageIcon } from 'lucide-react';
-import axios from 'axios';
+import api from '../../../api/axios';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
 import { ProductGridSkeleton } from '../../../components/ui/Skeleton';
@@ -25,7 +25,6 @@ const Products = () => {
     in_stock: true,
   });
 
-  const headers = { Authorization: `Bearer ${token}` };
 
   useEffect(() => {
     fetchProducts();
@@ -34,7 +33,7 @@ const Products = () => {
   const fetchProducts = async () => {
     try {
       // Add a timestamp to prevent browser caching
-      const res = await axios.get(`/api/products/?t=${Date.now()}`, { headers });
+      const res = await api.get(`/api/products/?t=${Date.now()}`);
       setProducts(res.data);
     } catch (err) {
       console.error('Fetch products error:', err);
@@ -55,10 +54,10 @@ const Products = () => {
     setSubmitting(true);
     try {
       if (editing) {
-        await axios.patch(`/api/products/${editing}`, form, { headers });
+        await api.patch(`/api/products/${editing}`, form);
         addToast('Product updated!', 'success');
       } else {
-        await axios.post('/api/products/', form, { headers });
+        await api.post('/api/products/', form);
         addToast('Product added!', 'success');
       }
       // Close modal IMMEDIATELY for snappy feel
@@ -93,7 +92,7 @@ const Products = () => {
     if (!deletingId) return;
     setIsDeleting(true);
     try {
-      await axios.delete(`/api/products/${deletingId}`, { headers });
+      await api.delete(`/api/products/${deletingId}`);
       addToast('Product deleted', 'success');
       fetchProducts();
     } catch {
@@ -109,8 +108,8 @@ const Products = () => {
     formData.append('file', file);
     setUploading(true);
     try {
-      await axios.post(`/api/products/${productId}/image`, formData, {
-        headers: { ...headers, 'Content-Type': 'multipart/form-data' },
+      await api.post(`/api/products/${productId}/image`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
       addToast('Image uploaded!', 'success');
       fetchProducts();

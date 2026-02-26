@@ -3,7 +3,7 @@ import { Plus, Trash, Save, Share2, Loader } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Card from '../../../components/ui/Card';
 import Button from '../../../components/ui/Button';
-import axios from 'axios';
+import api from '../../../api/axios';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
 
@@ -68,11 +68,7 @@ const CreateInvoice = () => {
                 items: items
             };
 
-            const response = await axios.post('/api/invoices/', invoiceData, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+            const response = await api.post('/api/invoices/', invoiceData);
 
             setSuccessData(response.data);
             addToast('Invoice created successfully!', 'success');

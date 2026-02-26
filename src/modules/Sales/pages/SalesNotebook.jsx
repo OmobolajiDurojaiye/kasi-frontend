@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
-import axios from 'axios';
+import api from '../../../api/axios';
 import { Plus, Search, Filter, Calendar, UploadCloud, FileText, Eye } from 'lucide-react';
 import Button from '../../../components/ui/Button';
 import DetailModal from '../../../components/ui/DetailModal';
@@ -110,9 +110,7 @@ const SalesNotebook = () => {
 
     const fetchInvoices = async () => {
         try {
-            const response = await axios.get('/api/invoices/', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await api.get('/api/invoices/');
             setInvoices(response.data);
         } catch (error) {
             console.error('Error loading notebook:', error);
@@ -143,9 +141,7 @@ const SalesNotebook = () => {
                 ]
             };
 
-            await axios.post('/api/invoices/', payload, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await api.post('/api/invoices/', payload);
 
             addToast('Sale recorded successfully!', 'success');
             fetchInvoices();
@@ -178,9 +174,8 @@ const SalesNotebook = () => {
 
         setUploading(true);
         try {
-            const response = await axios.post('/api/invoices/upload', formData, {
+            const response = await api.post('/api/invoices/upload', formData, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
                 }
             });

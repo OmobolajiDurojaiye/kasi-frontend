@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search, Filter, MoreHorizontal, FileText, Download, Share2, Eye, Trash, CheckCircle } from 'lucide-react';
-import axios from 'axios';
+import api from '../../../api/axios';
 import { useAuth } from '../../../context/AuthContext';
 import Button from '../../../components/ui/Button';
 import { useToast } from '../../../context/ToastContext';
@@ -130,9 +130,7 @@ const InvoiceActions = ({ invoice, onInvoiceUpdated, onInvoiceDeleted, onViewDet
 
     const handleDownload = async () => {
         try {
-            const response = await axios.get(`/api/invoices/${invoice.id}/pdf`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await api.get(`/api/invoices/${invoice.id}/pdf`);
             if (response.data.pdf_url) {
                 window.open(response.data.pdf_url, '_blank');
             } else {
@@ -148,9 +146,7 @@ const InvoiceActions = ({ invoice, onInvoiceUpdated, onInvoiceDeleted, onViewDet
     const handleDeleteConfirm = async () => {
         setDeleting(true);
         try {
-            await axios.delete(`/api/invoices/${invoice.id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await api.delete(`/api/invoices/${invoice.id}`);
             addToast('Invoice deleted successfully', 'success');
             onInvoiceDeleted(invoice.id);
         } catch (error) {
@@ -164,9 +160,8 @@ const InvoiceActions = ({ invoice, onInvoiceUpdated, onInvoiceDeleted, onViewDet
 
     const handleMarkAsPaid = async () => {
         try {
-            const response = await axios.patch(`/api/invoices/${invoice.id}`,
-                { status: 'Paid' },
-                { headers: { Authorization: `Bearer ${token}` } }
+            const response = await api.patch(`/api/invoices/${invoice.id}`,
+                { status: 'Paid' }
             );
             addToast('Invoice marked as paid', 'success');
             onInvoiceUpdated(response.data);
@@ -257,9 +252,7 @@ const Invoices = () => {
 
     const fetchInvoices = async () => {
         try {
-            const response = await axios.get('/api/invoices/', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await api.get('/api/invoices/');
             setInvoices(response.data);
         } catch (error) {
             console.error('Error fetching invoices:', error);

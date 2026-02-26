@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../../api/axios';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
 import { Search, User, Users, Mail, Phone, MapPin, FileText, Eye, ShoppingBag } from 'lucide-react';
@@ -113,9 +113,7 @@ const Clients = () => {
 
     const fetchClients = async () => {
         try {
-            const response = await axios.get('/api/invoices/customers', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await api.get('/api/invoices/customers');
             setClients(response.data);
         } catch (error) {
             console.error('Error fetching clients:', error);
@@ -131,9 +129,7 @@ const Clients = () => {
 
     const fetchInvoices = async () => {
         try {
-            const response = await axios.get('/api/invoices/', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await api.get('/api/invoices/');
             setInvoices(response.data);
         } catch (error) {
             console.error('Error fetching invoices:', error);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../../api/axios';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
 import { Search, CheckCircle, Calendar, ArrowUpRight, Eye, CreditCard } from 'lucide-react';
@@ -96,9 +96,7 @@ const Payments = () => {
 
     const fetchPayments = async () => {
         try {
-            const response = await axios.get('/api/invoices/', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await api.get('/api/invoices/');
             const paidInvoices = response.data.filter(inv => inv.status === 'Paid');
             setPayments(paidInvoices);
         } catch (error) {

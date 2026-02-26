@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
 import { Send, Bot, User, AlertCircle, CheckCircle } from 'lucide-react';
 import Button from '../../components/ui/Button';
@@ -25,9 +25,8 @@ const WebhookSimulator = () => {
         setMessage('');
 
         try {
-            const response = await axios.post('/api/webhooks/simulate', 
-                { text: newLog.text, platform: 'whatsapp' },
-                { headers: { Authorization: `Bearer ${token}` } }
+            const response = await api.post('/api/webhooks/simulate', 
+                { text: newLog.text, platform: 'whatsapp' }
             );
 
             const botResponse = {

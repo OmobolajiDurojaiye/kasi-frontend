@@ -5,7 +5,7 @@ import StatsCard from '../components/StatsCard';
 import ChartsSection from '../components/ChartsSection';
 import Button from '../../../components/ui/Button';
 import { DashboardSkeleton, TableSkeleton } from '../../../components/ui/Skeleton';
-import axios from 'axios';
+import api from '../../../api/axios';
 import { useAuth } from '../../../context/AuthContext';
 
 import RemindersModal from '../components/RemindersModal';
@@ -34,9 +34,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
-        const response = await axios.get('/api/invoices/', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await api.get('/api/invoices/');
         const data = response.data;
         setInvoices(data);
 

@@ -3,7 +3,7 @@ import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
 import { useTheme, THEMES } from '../../../context/ThemeContext';
 import Button from '../../../components/ui/Button';
-import axios from 'axios';
+import api from '../../../api/axios';
 import { Save, Building, Phone, MapPin, CreditCard, Image as ImageIcon, Palette, User, Check } from 'lucide-react';
 
 /* ── Tab Button ───────────────────────────────────── */
@@ -101,9 +101,7 @@ const Settings = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            await axios.patch('/api/auth/profile', formData, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await api.patch('/api/auth/profile', formData);
             addToast('Profile updated successfully', 'success');
         } catch (error) {
             console.error('Error updating profile:', error);
@@ -176,9 +174,8 @@ const Settings = () => {
 
                                         try {
                                             setLoading(true);
-                                            const res = await axios.post('/api/auth/profile/logo', uploadData, {
+                                            const res = await api.post('/api/auth/profile/logo', uploadData, {
                                                 headers: {
-                                                    Authorization: `Bearer ${token}`,
                                                     'Content-Type': 'multipart/form-data'
                                                 }
                                             });

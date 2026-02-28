@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FileText, CreditCard, BookOpen, MoreHorizontal, Users, Settings, HelpCircle, MessageCircle, LogOut, X, Sun, Moon, PanelLeft, PanelTop, Package } from 'lucide-react';
+import { LayoutDashboard, FileText, CreditCard, BookOpen, MoreHorizontal, Users, Settings, HelpCircle, MessageCircle, LogOut, X, Sun, Moon, PanelLeft, PanelTop, Package, Wallet, Briefcase, Clock, CalendarDays, TrendingUp } from 'lucide-react';
 import clsx from 'clsx';
 import { useTheme } from '../../context/ThemeContext';
 import { useLayout } from '../../context/LayoutContext';
@@ -21,8 +21,13 @@ const BottomNav = () => {
   ];
 
   const moreItems = [
+    { icon: Wallet, label: 'Wallet & Billing', path: '/billing' },
     { icon: Users, label: 'Clients', path: '/clients' },
     { icon: Package, label: 'Products', path: '/products' },
+    { icon: Briefcase, label: 'Services', path: '/services' },
+    { icon: Clock, label: 'Schedule', path: '/availability' },
+    { icon: CalendarDays, label: 'Bookings', path: '/bookings' },
+    { icon: TrendingUp, label: 'Analytics', path: '/analytics' },
     { icon: MessageCircle, label: 'Integrations', path: '/integrations' },
     { icon: Settings, label: 'Settings', path: '/settings' },
     { icon: HelpCircle, label: 'Help', path: '/help' },

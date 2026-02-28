@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, FileText, CreditCard, Users, Settings, HelpCircle, LogOut, BookOpen, MessageCircle, PanelLeft, Sun, Moon, Package, TrendingUp } from 'lucide-react';
+import { LayoutDashboard, FileText, CreditCard, Users, Settings, HelpCircle, LogOut, BookOpen, MessageCircle, PanelLeft, Sun, Moon, Package, TrendingUp, Wallet, Briefcase, Clock, CalendarDays } from 'lucide-react';
 import clsx from 'clsx';
 import { useLayout } from '../../context/LayoutContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -16,8 +16,12 @@ const TopBar = () => {
     { icon: BookOpen, label: 'Sales Notebook', path: '/sales' },
     { icon: FileText, label: 'Invoices', path: '/invoices' },
     { icon: CreditCard, label: 'Payments', path: '/payments' },
+    { icon: Wallet, label: 'Wallet & Billing', path: '/billing' },
     { icon: Users, label: 'Clients', path: '/clients' },
     { icon: Package, label: 'Products', path: '/products' },
+    { icon: Briefcase, label: 'Services', path: '/services' },
+    { icon: Clock, label: 'Schedule', path: '/availability' },
+    { icon: CalendarDays, label: 'Bookings', path: '/bookings' },
     { icon: TrendingUp, label: 'Analytics', path: '/analytics' },
     { icon: MessageCircle, label: 'Integrations', path: '/integrations' },
     { icon: Settings, label: 'Settings', path: '/settings' },
@@ -35,14 +39,14 @@ const TopBar = () => {
           </div>
 
           {/* Desktop nav */}
-          <nav className="flex items-center gap-1 ml-8">
+          <nav className="flex flex-1 items-center gap-1 mx-6 overflow-x-auto scrollbar-hide py-1 mask-linear-edges">
             {navItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
                 className={({ isActive }) =>
                   clsx(
-                    'flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all duration-200 font-medium text-[13px] whitespace-nowrap',
+                    'flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all duration-200 font-medium text-[13px] whitespace-nowrap shrink-0',
                     isActive
                       ? 'text-green-700 bg-green-50'
                       : 'text-gray-500 hover:text-dark hover:bg-gray-50'

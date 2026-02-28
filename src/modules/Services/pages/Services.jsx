@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Search, MapPin, Clock, Edit2, Trash2, X, AlertTriangle } from 'lucide-react';
-import axios from 'axios';
+import api from '../../../api/axios';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
 import { formatCurrency } from '../../../utils/formatters';
@@ -31,9 +31,7 @@ const Services = () => {
 
   const fetchServices = async () => {
     try {
-      const response = await axios.get('/api/services/', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get('/api/services/');
       setServices(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       showToast('error', 'Failed to fetch services');
@@ -47,14 +45,10 @@ const Services = () => {
     setIsSaving(true);
     try {
       if (editingService) {
-        await axios.put(`/api/services/${editingService.id}`, formData, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await api.put(`/api/services/${editingService.id}`, formData);
         showToast('success', 'Service updated successfully');
       } else {
-        await axios.post('/api/services/', formData, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await api.post('/api/services/', formData);
         showToast('success', 'Service created successfully');
       }
       setIsModalOpen(false);
@@ -75,9 +69,7 @@ const Services = () => {
     if (!serviceToDelete) return;
     setIsDeleting(true);
     try {
-      await axios.delete(`/api/services/${serviceToDelete.id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.delete(`/api/services/${serviceToDelete.id}`);
       showToast('success', 'Service deleted successfully');
       setServiceToDelete(null);
       fetchServices();

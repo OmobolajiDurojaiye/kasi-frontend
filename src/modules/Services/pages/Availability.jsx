@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../../api/axios';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
 import { Clock, Calendar, CheckCircle2 } from 'lucide-react';
@@ -22,9 +22,7 @@ const Availability = () => {
 
   const fetchSchedule = async () => {
     try {
-      const response = await axios.get('/api/services/schedule', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get('/api/services/schedule');
       setSchedule(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       showToast('error', 'Failed to fetch schedule');
@@ -42,9 +40,7 @@ const Availability = () => {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await axios.post('/api/services/schedule', schedule, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.post('/api/services/schedule', schedule);
       showToast('success', 'Schedule saved successfully');
     } catch (error) {
       showToast('error', 'Failed to save schedule');

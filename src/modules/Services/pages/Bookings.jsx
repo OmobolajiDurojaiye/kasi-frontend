@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../../api/axios';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
 import { CalendarDays, Clock, MapPin, User, CheckCircle, XCircle, ChevronDown, ListTodo } from 'lucide-react';
@@ -19,9 +19,7 @@ const Bookings = () => {
 
   const fetchBookings = async () => {
     try {
-      const response = await axios.get('/api/services/bookings', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get('/api/services/bookings');
       setBookings(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       showToast('error', 'Failed to fetch bookings');
@@ -33,9 +31,8 @@ const Bookings = () => {
   const updateStatus = async (id, newStatus) => {
     setUpdatingId(id);
     try {
-      await axios.put(`/api/services/bookings/${id}/status`, 
-        { status: newStatus },
-        { headers: { Authorization: `Bearer ${token}` } }
+      await api.put(`/api/services/bookings/${id}/status`, 
+        { status: newStatus }
       );
       showToast('success', `Booking marked as ${newStatus}`);
       fetchBookings();

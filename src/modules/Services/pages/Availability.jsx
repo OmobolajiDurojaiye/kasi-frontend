@@ -25,7 +25,7 @@ const Availability = () => {
       const response = await axios.get('/api/services/schedule', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setSchedule(response.data);
+      setSchedule(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       showToast('error', 'Failed to fetch schedule');
     } finally {

@@ -22,7 +22,7 @@ const Bookings = () => {
       const response = await axios.get('/api/services/bookings', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setBookings(response.data);
+      setBookings(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       showToast('error', 'Failed to fetch bookings');
     } finally {

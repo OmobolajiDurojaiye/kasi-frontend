@@ -34,7 +34,7 @@ const Services = () => {
       const response = await axios.get('/api/services/', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setServices(response.data);
+      setServices(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       showToast('error', 'Failed to fetch services');
     } finally {

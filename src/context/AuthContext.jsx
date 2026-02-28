@@ -8,15 +8,19 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
 
+  const fetchUser = async () => {
+    if (!token) return;
+    try {
+      const res = await api.get('/api/auth/me');
+      setUser(res.data);
+    } catch {
+      logout();
+    }
+  };
+
   useEffect(() => {
     if (token) {
-      // Validate token and get user info
-      api.get('/api/auth/me')
-      .then(res => {
-        setUser(res.data);
-      })
-      .catch(() => logout())
-      .finally(() => setLoading(false));
+      fetchUser().finally(() => setLoading(false));
     } else {
       setLoading(false);
     }
@@ -58,7 +62,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, signup, logout, loading }}>
+    <AuthContext.Provider value={{ user, token, login, signup, logout, loading, fetchUser }}>
       {!loading && children}
     </AuthContext.Provider>
   );

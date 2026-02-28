@@ -82,7 +82,7 @@ const CreateInvoice = () => {
     };
 
     if (successData) {
-        const message = `Hello ${successData.customer.name}, here is your invoice for N${successData.total_amount.toLocaleString()}. Please pay via: ${successData.payment_link}`;
+        const message = `Hello ${successData.customer.name}, here is your invoice for ₦${successData.total_amount.toLocaleString()}. Please transfer to the bank details listed in the attached PDF!`;
         const whatsappUrl = `https://wa.me/${successData.customer.phone}?text=${encodeURIComponent(message)}`;
 
         return (
@@ -107,19 +107,6 @@ const CreateInvoice = () => {
                                 <Share2 size={18} /> Send via WhatsApp
                             </Button>
                         </a>
-                        
-                        {successData.payment_link && (
-                            <a 
-                                href={successData.payment_link} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="block w-full"
-                            >
-                                <Button variant="outline" className="w-full justify-center border-gray-200">
-                                    Open Payment Link
-                                </Button>
-                            </a>
-                        )}
                         
                         {successData.pdf_url && (
                              <a 

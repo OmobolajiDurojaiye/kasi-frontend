@@ -122,7 +122,7 @@ const InvoiceActions = ({ invoice, onInvoiceUpdated, onInvoiceDeleted, onViewDet
     }, []);
 
     const handleShare = () => {
-        const message = `Hello ${invoice.customer.name}, here is your invoice for N${invoice.total_amount.toLocaleString()}. Please pay via: ${invoice.payment_link || 'Link not available'}`;
+        const message = `Hello ${invoice.customer.name}, here is your invoice for ₦${invoice.total_amount.toLocaleString()}. Please transfer to the bank details listed in the attached PDF!`;
         const whatsappUrl = `https://wa.me/${invoice.customer.phone}?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
         setIsOpen(false);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Plus, MoreVertical, FileText, Wallet, CheckCircle, Clock, Bell } from 'lucide-react';
 import StatsCard from '../components/StatsCard';
 import ChartsSection from '../components/ChartsSection';
@@ -12,9 +12,16 @@ import RemindersModal from '../components/RemindersModal';
 
 const Dashboard = () => {
   const { token, user } = useAuth();
+  const navigate = useNavigate();
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showReminders, setShowReminders] = useState(false);
+
+  useEffect(() => {
+    if (user?.is_admin) {
+      navigate('/admin');
+    }
+  }, [user, navigate]);
   
   const [stats, setStats] = useState([
     { icon: FileText, label: 'Total Invoice', value: '0', iconColor: 'text-green-600', iconBg: 'bg-green-100' },

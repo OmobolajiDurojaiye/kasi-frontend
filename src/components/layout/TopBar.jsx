@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, FileText, CreditCard, Users, Settings, HelpCircle, LogOut, BookOpen, MessageCircle, PanelLeft, Sun, Moon, Package } from 'lucide-react';
+import { LayoutDashboard, FileText, CreditCard, Users, Settings, HelpCircle, LogOut, BookOpen, MessageCircle, PanelLeft, Sun, Moon, Package, TrendingUp } from 'lucide-react';
 import clsx from 'clsx';
 import { useLayout } from '../../context/LayoutContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -18,6 +18,7 @@ const TopBar = () => {
     { icon: CreditCard, label: 'Payments', path: '/payments' },
     { icon: Users, label: 'Clients', path: '/clients' },
     { icon: Package, label: 'Products', path: '/products' },
+    { icon: TrendingUp, label: 'Analytics', path: '/analytics' },
     { icon: MessageCircle, label: 'Integrations', path: '/integrations' },
     { icon: Settings, label: 'Settings', path: '/settings' },
     { icon: HelpCircle, label: 'Help', path: '/help' },

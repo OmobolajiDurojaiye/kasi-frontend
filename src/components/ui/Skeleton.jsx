@@ -125,4 +125,41 @@ export const PageTableSkeleton = ({ cols = 5, rows = 6 }) => (
     </div>
 );
 
+/* ── Analytics Skeleton ──────────────────────────── */
+export const AnalyticsSkeleton = () => (
+    <div className="space-y-8 animate-pulse w-full">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <StatsCardSkeleton />
+            <StatsCardSkeleton />
+            <StatsCardSkeleton />
+        </div>
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 h-[300px]">
+             <Skeleton style={{ width: '100%', height: '100%' }} className="rounded-xl" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-4">
+                 <SkeletonCircle size={48} className="rounded-lg" />
+                 <div className="space-y-2 w-full">
+                     <SkeletonText width="60%" height="0.8rem" />
+                     <SkeletonText width="40%" height="1.5rem" />
+                 </div>
+             </div>
+             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-4">
+                 <SkeletonCircle size={48} className="rounded-lg" />
+                 <div className="space-y-2 w-full">
+                     <SkeletonText width="60%" height="0.8rem" />
+                     <SkeletonText width="40%" height="1.5rem" />
+                 </div>
+             </div>
+             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-4">
+                 <SkeletonCircle size={48} className="rounded-lg" />
+                 <div className="space-y-2 w-full">
+                     <SkeletonText width="60%" height="0.8rem" />
+                     <SkeletonText width="40%" height="1.5rem" />
+                 </div>
+             </div>
+        </div>
+    </div>
+);
+
 export default Skeleton;

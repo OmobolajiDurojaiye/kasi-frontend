@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, FileText, CreditCard, Users, Settings, HelpCircle, LogOut, BookOpen, MessageCircle, PanelTop, Sun, Moon, Package, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { BarChart3, FileText, CreditCard, Users, Settings, HelpCircle, LogOut, BookOpen, MessageCircle, PanelTop, Sun, Moon, Package, ChevronsLeft, ChevronsRight, TrendingUp, Shield, Radio, Wallet, Briefcase, Clock, CalendarDays } from 'lucide-react';
 import clsx from 'clsx';
 import { useLayout } from '../../context/LayoutContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -11,7 +11,7 @@ const SIDEBAR_KEY = 'bfm-sidebar-collapsed';
 const Sidebar = ({ onWidthChange }) => {
   const { toggleLayout } = useLayout();
   const { isDark, toggleTheme } = useTheme();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const [collapsed, setCollapsed] = useState(() => {
     try { return localStorage.getItem(SIDEBAR_KEY) === 'true'; } catch { return false; }
   });
@@ -26,17 +26,37 @@ const Sidebar = ({ onWidthChange }) => {
     onWidthChange?.(collapsed ? 72 : 240);
   }, []);
 
-  const navItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
+  const userNavItems = [
+    { icon: BarChart3, label: 'Dashboard', path: '/' },
     { icon: BookOpen, label: 'Sales Notebook', path: '/sales' },
     { icon: FileText, label: 'Invoices', path: '/invoices' },
     { icon: CreditCard, label: 'Payments', path: '/payments' },
+    { icon: Wallet, label: 'Wallet & Billing', path: '/billing' },
     { icon: Users, label: 'Clients', path: '/clients' },
     { icon: Package, label: 'Products', path: '/products' },
+    { icon: Briefcase, label: 'Services', path: '/services' },
+    { icon: Clock, label: 'Schedule', path: '/availability' },
+    { icon: CalendarDays, label: 'Bookings', path: '/bookings' },
+    { icon: TrendingUp, label: 'Analytics', path: '/analytics' },
     { icon: MessageCircle, label: 'Integrations', path: '/integrations' },
     { icon: Settings, label: 'Settings', path: '/settings' },
     { icon: HelpCircle, label: 'Help', path: '/help' },
   ];
+
+  const adminNavItems = [
+    { icon: BarChart3, label: 'Admin Dashboard', path: '/admin', roles: ['Super Admin', 'Finance Admin', 'Support Admin'] },
+    { icon: Users, label: 'All Users', path: '/admin/users', roles: ['Super Admin', 'Support Admin'] },
+    { icon: FileText, label: 'Global Invoices', path: '/admin/invoices', roles: ['Super Admin', 'Finance Admin'] },
+    { icon: Radio, label: 'System Broadcasts', path: '/admin/broadcasts', roles: ['Super Admin', 'Support Admin'] },
+    { icon: Shield, label: 'Staff Management', path: '/admin/staff', roles: ['Super Admin'] },
+    { icon: Settings, label: 'Settings', path: '/settings', roles: ['Super Admin', 'Finance Admin', 'Support Admin'] },
+  ];
+
+  let navItems = userNavItems;
+  if (user?.is_admin) {
+     const role = user.admin_role || 'Super Admin'; // Fallback
+     navItems = adminNavItems.filter(item => item.roles.includes(role));
+  }
 
   return (
     <div

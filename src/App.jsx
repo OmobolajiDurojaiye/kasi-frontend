@@ -20,6 +20,17 @@ import Clients from './modules/Clients/pages/Clients';
 import Payments from './modules/Payments/pages/Payments';
 import Help from './modules/Help/pages/Help';
 import Products from './modules/Products/pages/Products';
+import Analytics from './modules/Analytics/pages/Analytics';
+import AdminDashboard from './modules/Admin/pages/AdminDashboard';
+import AdminUsers from './modules/Admin/pages/AdminUsers';
+import AdminInvoices from './modules/Admin/pages/AdminInvoices';
+import AdminStaff from './modules/Admin/pages/AdminStaff';
+import AdminBroadcasts from './modules/Admin/pages/AdminBroadcasts';
+import BillingDashboard from './modules/Billing/pages/BillingDashboard';
+import PaymentCallback from './modules/Billing/pages/PaymentCallback';
+import Services from './modules/Services/pages/Services';
+import Availability from './modules/Services/pages/Availability';
+import Bookings from './modules/Services/pages/Bookings';
 
 function App() {
   return (
@@ -66,9 +77,45 @@ function App() {
                 </ProtectedRoute>
               } />
 
+              <Route path="/billing" element={
+                <ProtectedRoute>
+                  <BillingDashboard />
+                </ProtectedRoute>
+              } />
+
+              <Route path="/payment/callback" element={
+                <ProtectedRoute>
+                  <PaymentCallback />
+                </ProtectedRoute>
+              } />
+
               <Route path="/products" element={
                 <ProtectedRoute>
                   <Products />
+                </ProtectedRoute>
+              } />
+
+              <Route path="/services" element={
+                <ProtectedRoute>
+                  <Services />
+                </ProtectedRoute>
+              } />
+
+              <Route path="/availability" element={
+                <ProtectedRoute>
+                  <Availability />
+                </ProtectedRoute>
+              } />
+
+              <Route path="/bookings" element={
+                <ProtectedRoute>
+                  <Bookings />
+                </ProtectedRoute>
+              } />
+
+              <Route path="/analytics" element={
+                <ProtectedRoute>
+                  <Analytics />
                 </ProtectedRoute>
               } />
               
@@ -87,6 +134,32 @@ function App() {
               <Route path="/integrations" element={
                 <ProtectedRoute>
                   <Integrations />
+                </ProtectedRoute>
+              } />
+
+              <Route path="/admin" element={
+                <ProtectedRoute allowedRoles={['Super Admin', 'Finance Admin', 'Support Admin']}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/users" element={
+                <ProtectedRoute allowedRoles={['Super Admin', 'Support Admin']}>
+                  <AdminUsers />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/invoices" element={
+                <ProtectedRoute allowedRoles={['Super Admin', 'Finance Admin']}>
+                  <AdminInvoices />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/broadcasts" element={
+                <ProtectedRoute allowedRoles={['Super Admin', 'Support Admin']}>
+                  <AdminBroadcasts />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/staff" element={
+                <ProtectedRoute allowedRoles={['Super Admin']}>
+                  <AdminStaff />
                 </ProtectedRoute>
               } />
           </Route>

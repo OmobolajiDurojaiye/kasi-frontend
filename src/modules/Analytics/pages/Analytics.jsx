@@ -46,7 +46,7 @@ const Analytics = () => {
 
   if (loading || !data) {
     return (
-      <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6 bg-[#FCFAFA] min-h-[calc(100vh-theme(spacing.16))] relative" style={{ backgroundImage: 'radial-gradient(#e5e7eb 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
+      <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6 min-h-[calc(100vh-theme(spacing.16))] relative">
           {/* Header Skeleton */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="h-8 bg-gray-200 rounded animate-pulse w-32"></div>
@@ -58,7 +58,7 @@ const Analytics = () => {
   }
 
   return (
-    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6 bg-[#FCFAFA] dark:bg-gray-900 min-h-[calc(100vh-theme(spacing.16))] relative" style={{ backgroundImage: 'radial-gradient(#e5e7eb 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
+    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6 min-h-[calc(100vh-theme(spacing.16))] relative">
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

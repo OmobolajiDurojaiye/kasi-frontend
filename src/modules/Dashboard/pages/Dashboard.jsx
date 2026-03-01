@@ -139,7 +139,7 @@ const Dashboard = () => {
     return (
       <div className="space-y-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
+          <div className="w-full">
             <h1 className="text-2xl font-bold text-dark mb-1">{getGreeting()}</h1>
             <p className="text-gray-500 text-sm">Loading your dashboard...</p>
           </div>
@@ -152,12 +152,12 @@ const Dashboard = () => {
   return (
     <div className="space-y-8">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-           <h1 className="text-2xl font-bold text-dark mb-1">{getGreeting()}</h1>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 w-full">
+        <div className="w-full">
+           <h1 className="text-2xl font-bold text-dark mb-1 break-words">{getGreeting()}</h1>
            <p className="text-gray-500 text-sm">Here's what's happening today.</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
              {overdueInvoices.length > 0 && (
                 <Button 
                     onClick={() => setShowReminders(true)}
@@ -167,8 +167,8 @@ const Dashboard = () => {
                     {overdueInvoices.length} Overdue
                 </Button>
             )}
-            <Link to="/invoices/create">
-                <Button className="flex items-center gap-2 bg-primary hover:bg-green-700 text-white px-5 py-2.5 rounded-xl shadow-lg shadow-green-200 transition-all text-sm font-medium">
+            <Link to="/invoices/create" className="w-full sm:w-auto">
+                <Button className="w-full flex justify-center items-center gap-2 bg-primary hover:bg-green-700 text-white px-5 py-2.5 rounded-xl shadow-lg shadow-green-200 transition-all text-sm font-medium">
                 <Plus size={18} />
                 Create Invoice
                 </Button>
@@ -183,9 +183,9 @@ const Dashboard = () => {
       />
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         {stats.map((stat, index) => (
-          <StatsCard key={index} {...stat} />
+          <StatsCard key={index} {...stat} className="p-3 sm:p-6" />
         ))}
       </div>
 
@@ -201,8 +201,8 @@ const Dashboard = () => {
             </button>
         </div>
         
-        <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+        <div className="overflow-x-auto w-full">
+            <table className="w-full min-w-[800px] text-sm">
                 <thead>
                     <tr className="text-left border-b border-gray-100">
                         <th className="pb-3 pl-3 font-semibold text-gray-400 text-xs uppercase tracking-wide">

@@ -284,13 +284,13 @@ const Invoices = () => {
     return (
         <div className="space-y-8">
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 w-full">
+                <div className="w-full">
                     <h1 className="text-2xl font-bold text-dark mb-1">Invoices</h1>
                     <p className="text-gray-500 text-sm">Manage and track all your invoices here.</p>
                 </div>
-                <div className="flex gap-3 w-full md:w-auto">
-                    <div className="relative flex-1 md:w-64">
+                <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                    <div className="relative flex-1 w-full md:w-64">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                         <input
                             type="text"
@@ -300,12 +300,12 @@ const Invoices = () => {
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
-                    <Button variant="outline" className="hidden md:flex items-center gap-2 bg-white border-gray-200 hover:bg-gray-50 text-gray-700">
+                    <Button variant="outline" className="hidden md:flex items-center justify-center gap-2 bg-white border-gray-200 hover:bg-gray-50 text-gray-700 w-full sm:w-auto">
                         <Filter size={20} />
                         Filters
                     </Button>
-                    <Link to="/invoices/create">
-                        <Button className="flex items-center gap-2 bg-primary hover:bg-green-700 text-white px-6 py-3 rounded-xl shadow-lg shadow-green-200 transition-all">
+                    <Link to="/invoices/create" className="w-full sm:w-auto">
+                        <Button className="w-full flex justify-center items-center gap-2 bg-primary hover:bg-green-700 text-white px-6 py-3 rounded-xl shadow-lg shadow-green-200 transition-all">
                             <Plus size={20} />
                             Create Invoice
                         </Button>
@@ -314,9 +314,9 @@ const Invoices = () => {
             </div>
 
             {/* Table Section */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                <div className="overflow-x-auto">
-                    <table className="w-full">
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 w-full">
+                <div className="overflow-x-auto w-full">
+                    <table className="w-full min-w-[900px]">
                         <thead>
                             <tr className="text-left border-b border-gray-100">
                                 <th className="pb-4 pt-2 font-semibold text-gray-400 text-xs uppercase tracking-wide">Name/Client</th>

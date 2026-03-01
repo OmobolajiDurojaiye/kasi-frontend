@@ -27,7 +27,7 @@ const Sidebar = ({ onWidthChange }) => {
   }, []);
 
   const userNavItems = [
-    { icon: BarChart3, label: 'Dashboard', path: '/' },
+    { icon: BarChart3, label: 'Dashboard', path: '/dashboard' },
     { icon: BookOpen, label: 'Sales Notebook', path: '/sales' },
     { icon: FileText, label: 'Invoices', path: '/invoices' },
     { icon: CreditCard, label: 'Payments', path: '/payments' },

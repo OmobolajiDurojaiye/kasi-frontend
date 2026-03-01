@@ -13,13 +13,13 @@ const MainLayout = () => {
 
   if (layout === 'sidebar') {
     return (
-      <div className={`min-h-screen bg-white font-sans text-dark flex flex-col`}>
+      <div className={`min-h-screen bg-white font-sans text-dark flex flex-col w-full overflow-x-hidden`}>
         <ImpersonationBanner />
         <BroadcastBanner />
-        <div className="flex flex-1">
+        <div className="flex flex-1 min-w-0">
           <Sidebar onWidthChange={setSidebarWidth} />
           <main
-            className="flex-1 p-4 md:p-6 pb-20 md:pb-6 ml-0"
+            className="flex-1 min-w-0 p-4 md:p-6 pb-20 md:pb-6 ml-0"
             style={{ marginLeft: undefined }}
           >
             {/* Dynamic margin for desktop only */}
@@ -35,12 +35,12 @@ const MainLayout = () => {
   }
 
   return (
-    <div className={`min-h-screen bg-white font-sans text-dark flex flex-col`}>
+    <div className={`min-h-screen bg-white font-sans text-dark flex flex-col w-full overflow-x-hidden`}>
       <ImpersonationBanner />
       <BroadcastBanner />
       <TopBar />
-      <main className="flex-1 p-4 md:p-6 pb-20 md:pb-6">
-        <div className="max-w-7xl mx-auto">
+      <main className="flex-1 min-w-0 p-4 md:p-6 pb-20 md:pb-6">
+        <div className="max-w-7xl mx-auto w-full">
           <Outlet />
         </div>
       </main>

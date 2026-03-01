@@ -14,7 +14,7 @@ const BottomNav = () => {
   const navigate = useNavigate();
 
   const mainTabs = [
-    { icon: LayoutDashboard, label: 'Home', path: '/' },
+    { icon: LayoutDashboard, label: 'Home', path: '/dashboard' },
     { icon: BookOpen, label: 'Sales', path: '/sales' },
     { icon: FileText, label: 'Invoices', path: '/invoices' },
     { icon: CreditCard, label: 'Payments', path: '/payments' },

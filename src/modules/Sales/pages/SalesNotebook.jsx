@@ -193,12 +193,12 @@ const SalesNotebook = () => {
     return (
         <div className="space-y-5">
             {/* Header & Stats */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 w-full">
+                <div className="w-full">
                     <h1 className="text-2xl font-bold text-dark mb-1">Sales Notebook</h1>
                     <p className="text-gray-500 text-sm">Track your daily sales instantly.</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                     <input
                         type="file"
                         accept=".csv"
@@ -210,12 +210,12 @@ const SalesNotebook = () => {
                         onClick={() => fileInputRef.current?.click()}
                         disabled={uploading}
                         variant="outline"
-                        className="flex items-center gap-2 shadow-sm text-sm font-medium transition-colors"
+                        className="w-full sm:w-auto flex justify-center items-center gap-2 shadow-sm text-sm font-medium transition-colors"
                     >
                         <UploadCloud size={16} />
                         {uploading ? 'Uploading...' : 'Import CSV'}
                     </Button>
-                    <Button onClick={() => setShowQuickAdd(!showQuickAdd)} className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg shadow-md shadow-green-100 text-sm font-medium hover:bg-green-700 transition-colors">
+                    <Button onClick={() => setShowQuickAdd(!showQuickAdd)} className="w-full sm:w-auto flex justify-center items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg shadow-md shadow-green-100 text-sm font-medium hover:bg-green-700 transition-colors">
                         <Plus size={16} />
                         Quick Sale
                     </Button>
@@ -223,14 +223,14 @@ const SalesNotebook = () => {
             </div>
 
             {/* Quick Stats Row */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                    <p className="text-xs text-green-600 font-medium uppercase tracking-wider">Sales Today</p>
-                    <p className="text-3xl font-bold text-dark mt-2">₦{salesToday.toLocaleString()}</p>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 min-w-0">
+                    <p className="text-[10px] sm:text-xs text-green-600 font-medium uppercase tracking-wider truncate" title="Sales Today">Sales Today</p>
+                    <p className="text-xl sm:text-3xl font-bold text-dark mt-2 truncate" title={`₦${salesToday.toLocaleString()}`}>₦{salesToday.toLocaleString()}</p>
                 </div>
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                    <p className="text-xs text-green-600 font-medium uppercase tracking-wider">Transactions</p>
-                    <p className="text-3xl font-bold text-dark mt-2">{countToday}</p>
+                <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 min-w-0">
+                    <p className="text-[10px] sm:text-xs text-green-600 font-medium uppercase tracking-wider truncate" title="Transactions">Transactions</p>
+                    <p className="text-xl sm:text-3xl font-bold text-dark mt-2 truncate" title={countToday}>{countToday}</p>
                 </div>
             </div>
 
@@ -281,13 +281,13 @@ const SalesNotebook = () => {
             )}
 
             {/* Notebook Table */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                <div className="flex justify-between items-center mb-6">
-                    <div className="relative flex-1 md:w-64">
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 w-full">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div className="relative flex-1 w-full md:w-64">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                         <input type="text" placeholder="Search notebook..." className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-base" />
                     </div>
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 w-full sm:w-auto">
                         <button className="flex items-center gap-2 text-gray-700 hover:text-dark px-4 py-2 rounded-xl hover:bg-gray-50 border border-gray-200 text-sm font-medium">
                             <Filter size={18} />
                             Filter
@@ -299,8 +299,8 @@ const SalesNotebook = () => {
                     </div>
                 </div>
 
-                <div className="overflow-x-auto">
-                    <table className="w-full">
+                <div className="overflow-x-auto w-full">
+                    <table className="w-full min-w-[800px]">
                         <thead>
                             <tr className="text-left border-b border-gray-100">
                                 <th className="pb-4 pt-2 font-semibold text-gray-400 text-xs uppercase tracking-wide">Date</th>

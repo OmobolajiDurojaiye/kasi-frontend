@@ -25,11 +25,16 @@
 }
 
 .glass-effect {
-  @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-sm;
+  background-color: rgb(255 255 255 / 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgb(255 255 255 / 0.2);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 }
 
 body {
-  @apply bg-bg-main text-dark;
+  background-color: var(--color-bg-main);
+  color: var(--color-dark);
 }
 
 /* Safe area for iPhone bottom bar */

@@ -53,7 +53,10 @@ const BillingDashboard = () => {
     setProcessingPkg(pkgId);
     try {
       // 1. Initialize Paystack
-      const initRes = await api.post('/api/billing/initialize-topup', { package_id: pkgId });
+      const initRes = await api.post('/api/billing/initialize-topup', { 
+        package_id: pkgId,
+        callback_url: `${window.location.origin}/payment/callback`
+      });
       const { authorization_url, reference } = initRes.data;
       
       // Store package_id for the callback verification

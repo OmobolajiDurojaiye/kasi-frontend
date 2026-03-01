@@ -52,10 +52,12 @@ const Sidebar = ({ onWidthChange }) => {
     { icon: Settings, label: 'Settings', path: '/settings', roles: ['Super Admin', 'Finance Admin', 'Support Admin'] },
   ];
 
-  let navItems = userNavItems;
+  let navItems = [...userNavItems];
   if (user?.is_admin) {
      const role = user.admin_role || 'Super Admin'; // Fallback
-     navItems = adminNavItems.filter(item => item.roles.includes(role));
+     const allowedAdminItems = adminNavItems.filter(item => item.roles.includes(role));
+     // Append admin items to the bottom of the user items
+     navItems = [...navItems, ...allowedAdminItems];
   }
 
   return (

@@ -47,6 +47,7 @@ const Sidebar = ({ onWidthChange }) => {
     { icon: BarChart3, label: 'Admin Dashboard', path: '/admin', roles: ['Super Admin', 'Finance Admin', 'Support Admin'] },
     { icon: Users, label: 'All Users', path: '/admin/users', roles: ['Super Admin', 'Support Admin'] },
     { icon: FileText, label: 'Global Invoices', path: '/admin/invoices', roles: ['Super Admin', 'Finance Admin'] },
+    { icon: CreditCard, label: 'Platform Transactions', path: '/admin/transactions', roles: ['Super Admin', 'Finance Admin'] },
     { icon: Radio, label: 'System Broadcasts', path: '/admin/broadcasts', roles: ['Super Admin', 'Support Admin'] },
     { icon: Shield, label: 'Staff Management', path: '/admin/staff', roles: ['Super Admin'] },
     { icon: Settings, label: 'Settings', path: '/settings', roles: ['Super Admin', 'Finance Admin', 'Support Admin'] },
@@ -55,9 +56,7 @@ const Sidebar = ({ onWidthChange }) => {
   let navItems = [...userNavItems];
   if (user?.is_admin) {
      const role = user.admin_role || 'Super Admin'; // Fallback
-     const allowedAdminItems = adminNavItems.filter(item => item.roles.includes(role));
-     // Append admin items to the bottom of the user items
-     navItems = [...navItems, ...allowedAdminItems];
+     navItems = adminNavItems.filter(item => item.roles.includes(role));
   }
 
   return (

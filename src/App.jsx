@@ -27,6 +27,7 @@ import AdminUsers from './modules/Admin/pages/AdminUsers';
 import AdminInvoices from './modules/Admin/pages/AdminInvoices';
 import AdminStaff from './modules/Admin/pages/AdminStaff';
 import AdminBroadcasts from './modules/Admin/pages/AdminBroadcasts';
+import AdminTransactions from './modules/Admin/pages/AdminTransactions';
 import BillingDashboard from './modules/Billing/pages/BillingDashboard';
 import PaymentCallback from './modules/Billing/pages/PaymentCallback';
 import Services from './modules/Services/pages/Services';
@@ -153,6 +154,11 @@ function App() {
               <Route path="/admin/invoices" element={
                 <ProtectedRoute allowedRoles={['Super Admin', 'Finance Admin']}>
                   <AdminInvoices />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/transactions" element={
+                <ProtectedRoute allowedRoles={['Super Admin', 'Finance Admin']}>
+                  <AdminTransactions />
                 </ProtectedRoute>
               } />
               <Route path="/admin/broadcasts" element={

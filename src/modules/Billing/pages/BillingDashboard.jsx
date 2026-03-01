@@ -56,16 +56,10 @@ const BillingDashboard = () => {
       const initRes = await api.post('/api/billing/initialize-topup', { package_id: pkgId });
       const { authorization_url, reference } = initRes.data;
       
-      const PaystackPop = await loadPaystack();
+      // Store package_id for the callback verification
+      localStorage.setItem('pending_package_id', pkgId);
       
-      // 2. Open Paystack Modal (extracting access code from authorization_url usually works, 
-      // but passing the public key + email directly to PaystackPop is standard JS inline)
-      // Since we generated `authorization_url`, if building a strictly JS inline, we would need 
-      // the Backend to either return `access_code` or we extract it.
-      // Wait, let's just use window.location.href to redirect to the secure Paystack checkout if easier, 
-      // or implement the inline.
-      // Easiest is to redirect to the returned `authorization_url`.
-      
+      // Redirect to the returned `authorization_url`.
       window.location.href = authorization_url;
       
     } catch (err) {

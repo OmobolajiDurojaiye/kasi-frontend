@@ -21,7 +21,7 @@ const PaymentCallback = () => {
   const verifyPayment = async () => {
     // Paystack usually returns `reference` or `trxref`
     const reference = searchParams.get('reference') || searchParams.get('trxref');
-    const packageId = localStorage.getItem('pending_topup_package');
+    const packageId = localStorage.getItem('pending_package_id');
 
     if (!reference) {
       setStatus('error');
@@ -45,7 +45,7 @@ const PaymentCallback = () => {
       setMessage('Payment successful! Your credits have been updated.');
       
       // Clean up
-      localStorage.removeItem('pending_topup_package');
+      localStorage.removeItem('pending_package_id');
       
       // Optionally refresh user data if auth context holds credits
       await fetchUser();
@@ -56,7 +56,7 @@ const PaymentCallback = () => {
     } catch (err) {
       setStatus('error');
       setMessage(err.response?.data?.error || 'Payment verification failed.');
-      localStorage.removeItem('pending_topup_package');
+      localStorage.removeItem('pending_package_id');
     }
   };
 

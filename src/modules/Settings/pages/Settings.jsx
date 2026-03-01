@@ -4,7 +4,7 @@ import { useToast } from '../../../context/ToastContext';
 import { useTheme, THEMES } from '../../../context/ThemeContext';
 import Button from '../../../components/ui/Button';
 import api from '../../../api/axios';
-import { Save, Building, Phone, MapPin, CreditCard, Image as ImageIcon, Palette, User, Check } from 'lucide-react';
+import { Save, Building, Phone, MapPin, CreditCard, Image as ImageIcon, Palette, User, Check, Brain } from 'lucide-react';
 
 /* ── Tab Button ───────────────────────────────────── */
 const TabButton = ({ active, icon: Icon, label, onClick }) => (
@@ -63,7 +63,7 @@ const ThemeCard = ({ theme, isSelected, onSelect }) => (
 
 /* ── Main Settings Page ───────────────────────────── */
 const Settings = () => {
-    const { user, token } = useAuth();
+    const { user, token, fetchUser } = useAuth();
     const { addToast } = useToast();
     const { theme: currentTheme, setTheme } = useTheme();
     const [loading, setLoading] = useState(false);
@@ -76,7 +76,8 @@ const Settings = () => {
         logo_url: '',
         bank_name: '',
         account_number: '',
-        account_name: ''
+        account_name: '',
+        ai_instructions: ''
     });
 
     useEffect(() => {
@@ -88,7 +89,8 @@ const Settings = () => {
                 logo_url: user.logo_url || '',
                 bank_name: user.bank_name || '',
                 account_number: user.account_number || '',
-                account_name: user.account_name || ''
+                account_name: user.account_name || '',
+                ai_instructions: user.ai_instructions || ''
             });
         }
     }, [user]);
@@ -102,6 +104,7 @@ const Settings = () => {
         setLoading(true);
         try {
             await api.patch('/api/auth/profile', formData);
+            if (fetchUser) await fetchUser(); // Hydrate context
             addToast('Profile updated successfully', 'success');
         } catch (error) {
             console.error('Error updating profile:', error);
@@ -123,6 +126,7 @@ const Settings = () => {
             <div className="flex gap-2 bg-white rounded-2xl p-2 shadow-sm border border-gray-100">
                 <TabButton active={activeTab === 'profile'} icon={User} label="Profile" onClick={() => setActiveTab('profile')} />
                 <TabButton active={activeTab === 'billing'} icon={CreditCard} label="Billing" onClick={() => setActiveTab('billing')} />
+                <TabButton active={activeTab === 'ai_rules'} icon={Brain} label="AI Rules" onClick={() => setActiveTab('ai_rules')} />
                 <TabButton active={activeTab === 'appearance'} icon={Palette} label="Appearance" onClick={() => setActiveTab('appearance')} />
             </div>
 
@@ -320,6 +324,42 @@ const Settings = () => {
                             </div>
                         </div>
                         <p className="text-xs text-gray-400">This is how your payment info will appear on generated invoices.</p>
+                    </div>
+
+                    <div className="flex justify-end">
+                        <Button
+                            type="submit"
+                            disabled={loading}
+                            className="bg-primary hover:bg-green-700 text-white px-8 py-3 rounded-xl shadow-lg shadow-green-200 inline-flex items-center gap-2"
+                        >
+                            {loading ? 'Saving...' : 'Save Changes'}
+                            <Save size={20} className="ml-2" />
+                        </Button>
+                    </div>
+                </form>
+            )}
+
+            {/* ── AI RULES TAB ─────────────────────── */}
+            {activeTab === 'ai_rules' && (
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 space-y-6">
+                        <h2 className="text-xl font-bold text-dark flex items-center gap-2">
+                            <Brain className="text-primary" size={24} />
+                            Custom AI Instructions
+                        </h2>
+                        <p className="text-sm text-gray-500 -mt-3">Teach Kasi how to talk to your customers. Add your specific return policies, delivery times, or brand tone here.</p>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium text-gray-700">Business Context & Rules</label>
+                            <textarea
+                                name="ai_instructions"
+                                value={formData.ai_instructions}
+                                onChange={handleChange}
+                                rows={8}
+                                className="w-full px-4 py-3 rounded-xl bg-gray-50 border-transparent focus:bg-white focus:border-green-500 focus:ring-0 transition-all font-medium text-sm"
+                                placeholder="E.g., 'We do not offer refunds, only exchanges. Standard delivery takes 3-5 days in Lagos for ₦3,000. Always end your messages with: Stay Beautiful!'"
+                            />
+                        </div>
                     </div>
 
                     <div className="flex justify-end">

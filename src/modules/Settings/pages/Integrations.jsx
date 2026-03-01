@@ -178,22 +178,44 @@ const Integrations = () => {
         </div>
       </div>
 
-      {/* ── WhatsApp (Coming Soon) ────────────────── */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-6 opacity-75">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-xl bg-green-500 flex items-center justify-center shrink-0">
-            <MessageCircle size={24} className="text-white" />
-          </div>
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <h3 className="text-lg font-bold text-dark">WhatsApp</h3>
-              <span className="text-xs font-semibold px-2 py-1 rounded-full bg-orange-100 text-orange-600">
-                Coming Soon
-              </span>
+      {/* ── WhatsApp (Evolution API) ────────────────── */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mt-6">
+        <div className="p-5 sm:p-6">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-xl bg-green-500 flex items-center justify-center shrink-0">
+              <MessageCircle size={24} className="text-white" />
             </div>
-            <p className="text-sm text-gray-500 mt-1">
-              Automate replies and generate invoices directly from WhatsApp Business messages.
-            </p>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="text-lg font-bold text-dark">WhatsApp</h3>
+                <span className="text-xs font-semibold px-2 py-1 rounded-full bg-orange-100 text-orange-600 border border-orange-200">
+                  Beta Access
+                </span>
+              </div>
+              <p className="text-sm text-gray-500 mt-1">
+                Link your WhatsApp account using Evolution API. The AI will reply to incoming customer messages from your linked number.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-6 space-y-4">
+            <div className="bg-gray-50 rounded-xl p-4 space-y-3">
+               <p className="text-sm font-semibold text-dark">How to Connect</p>
+               <ol className="text-sm text-gray-600 space-y-2 list-decimal list-inside">
+                 <li>Click <strong>Generate QR Code</strong> below</li>
+                 <li>Open WhatsApp on your phone ➔ Settings ➔ <strong>Linked Devices</strong></li>
+                 <li>Point your phone camera at the screen to scan the QR code</li>
+               </ol>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                disabled
+                className="px-6 py-2.5 bg-green-500 text-white rounded-xl text-sm font-medium hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2 justify-center"
+              >
+                Generate QR Code (Coming Soon)
+              </button>
+            </div>
           </div>
         </div>
       </div>

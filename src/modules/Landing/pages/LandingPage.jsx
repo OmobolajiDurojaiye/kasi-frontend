@@ -368,7 +368,7 @@ const LandingPage = () => {
             Ready to hire your AI employee?
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto">
-            Get 10 free credits when you sign up today. Watch Kasi close your first few deals entirely on autopilot.
+            Get 5 free credits when you sign up today. Watch Kasi close your first few deals entirely on autopilot.
           </p>
           <Link to="/signup" className="inline-flex items-center gap-2 px-10 py-5 bg-green-600 hover:bg-green-700 text-white rounded-full font-bold text-xl transition-all shadow-xl shadow-green-600/30 hover:scale-105 active:scale-95">
             Create Free Account <ChevronRight size={24} />

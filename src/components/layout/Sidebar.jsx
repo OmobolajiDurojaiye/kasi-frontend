@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { BarChart3, FileText, CreditCard, Users, Settings, HelpCircle, LogOut, BookOpen, MessageCircle, PanelTop, Sun, Moon, Package, ChevronsLeft, ChevronsRight, TrendingUp, Shield, Radio, Wallet, Briefcase, Clock, CalendarDays } from 'lucide-react';
+import { BarChart3, FileText, CreditCard, Users, Settings, HelpCircle, LogOut, BookOpen, MessageCircle, PanelTop, Sun, Moon, Package, ChevronsLeft, ChevronsRight, TrendingUp, Shield, Radio, Wallet, Briefcase, Clock, CalendarDays, ChevronDown } from 'lucide-react';
 import clsx from 'clsx';
 import { useLayout } from '../../context/LayoutContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -15,6 +15,14 @@ const Sidebar = ({ onWidthChange }) => {
   const [collapsed, setCollapsed] = useState(() => {
     try { return localStorage.getItem(SIDEBAR_KEY) === 'true'; } catch { return false; }
   });
+  const [expandedGroups, setExpandedGroups] = useState({});
+
+  const toggleGroup = (label) => {
+    setExpandedGroups(prev => ({ ...prev, [label]: !prev[label] }));
+    if (collapsed) {
+      setCollapsed(false);
+    }
+  };
 
   useEffect(() => {
     try { localStorage.setItem(SIDEBAR_KEY, collapsed); } catch {}
@@ -29,17 +37,35 @@ const Sidebar = ({ onWidthChange }) => {
   const userNavItems = [
     { icon: BarChart3, label: 'Dashboard', path: '/dashboard' },
     { icon: BookOpen, label: 'Sales Notebook', path: '/sales' },
-    { icon: FileText, label: 'Invoices', path: '/invoices' },
-    { icon: CreditCard, label: 'Payments', path: '/payments' },
-    { icon: Wallet, label: 'Wallet & Billing', path: '/billing' },
-    { icon: Users, label: 'Clients', path: '/clients' },
-    { icon: Package, label: 'Products', path: '/products' },
-    { icon: Briefcase, label: 'Services', path: '/services' },
-    { icon: Clock, label: 'Schedule', path: '/availability' },
-    { icon: CalendarDays, label: 'Bookings', path: '/bookings' },
-    { icon: TrendingUp, label: 'Analytics', path: '/analytics' },
-    { icon: MessageCircle, label: 'Integrations', path: '/integrations' },
-    { icon: Settings, label: 'Settings', path: '/settings' },
+    {
+      label: 'Finances',
+      icon: Wallet,
+      children: [
+        { icon: FileText, label: 'Invoices', path: '/invoices' },
+        { icon: CreditCard, label: 'Payments', path: '/payments' },
+        { icon: Wallet, label: 'Wallet & Billing', path: '/billing' },
+      ]
+    },
+    {
+      label: 'Workspace',
+      icon: Briefcase,
+      children: [
+        { icon: Users, label: 'Clients', path: '/clients' },
+        { icon: Briefcase, label: 'Services', path: '/services' },
+        { icon: Package, label: 'Products', path: '/products' },
+        { icon: Clock, label: 'Schedule', path: '/availability' },
+        { icon: CalendarDays, label: 'Bookings', path: '/bookings' },
+      ]
+    },
+    {
+      label: 'System',
+      icon: Settings,
+      children: [
+        { icon: TrendingUp, label: 'Analytics', path: '/analytics' },
+        { icon: MessageCircle, label: 'Integrations', path: '/integrations' },
+        { icon: Settings, label: 'Settings', path: '/settings' },
+      ]
+    },
     { icon: HelpCircle, label: 'Help', path: '/help' },
   ];
 
@@ -82,23 +108,70 @@ const Sidebar = ({ onWidthChange }) => {
         {/* Nav */}
         <nav className="space-y-0.5">
           {navItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              title={collapsed ? item.label : undefined}
-              className={({ isActive }) =>
-                clsx(
-                  'flex items-center rounded-lg transition-all duration-200 group font-medium text-sm',
-                  collapsed ? 'justify-center px-0 py-2.5' : 'gap-3 px-3 py-2.5',
-                  isActive
-                    ? 'text-green-700 bg-green-50'
-                    : 'text-gray-500 hover:text-dark hover:bg-gray-50'
-                )
-              }
-            >
-              <item.icon size={18} className="transition-colors duration-200 shrink-0" />
-              {!collapsed && <span>{item.label}</span>}
-            </NavLink>
+            item.children ? (
+              <div key={item.label} className="mb-0.5">
+                <button
+                  onClick={() => toggleGroup(item.label)}
+                  title={collapsed ? item.label : undefined}
+                  className={clsx(
+                    'w-full flex items-center justify-between rounded-lg transition-all duration-200 group font-medium text-sm',
+                    collapsed ? 'justify-center px-0 py-2.5' : 'px-3 py-2.5',
+                    'text-gray-500 hover:text-dark hover:bg-gray-50'
+                  )}
+                >
+                  <div className={clsx('flex items-center', collapsed ? 'justify-center' : 'gap-3')}>
+                    <item.icon size={18} className="transition-colors duration-200 shrink-0" />
+                    {!collapsed && <span>{item.label}</span>}
+                  </div>
+                  {!collapsed && (
+                    <ChevronDown
+                      size={16}
+                      className={clsx('transition-transform duration-200', expandedGroups[item.label] ? 'rotate-180' : '')}
+                    />
+                  )}
+                </button>
+                
+                {expandedGroups[item.label] && !collapsed && (
+                  <div className="mt-0.5 space-y-0.5 ml-8 border-l border-gray-100 pl-2">
+                    {item.children.map((child) => (
+                      <NavLink
+                        key={child.path}
+                        to={child.path}
+                        className={({ isActive }) =>
+                          clsx(
+                            'flex items-center rounded-lg transition-all duration-200 group font-medium text-sm gap-3 px-3 py-2',
+                            isActive
+                              ? 'text-green-700 bg-green-50'
+                              : 'text-gray-500 hover:text-dark hover:bg-gray-50'
+                          )
+                        }
+                      >
+                        <child.icon size={16} className="transition-colors duration-200 shrink-0" />
+                        <span>{child.label}</span>
+                      </NavLink>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                title={collapsed ? item.label : undefined}
+                className={({ isActive }) =>
+                  clsx(
+                    'flex items-center rounded-lg transition-all duration-200 group font-medium text-sm',
+                    collapsed ? 'justify-center px-0 py-2.5' : 'gap-3 px-3 py-2.5',
+                    isActive
+                      ? 'text-green-700 bg-green-50'
+                      : 'text-gray-500 hover:text-dark hover:bg-gray-50'
+                  )
+                }
+              >
+                <item.icon size={18} className="transition-colors duration-200 shrink-0" />
+                {!collapsed && <span>{item.label}</span>}
+              </NavLink>
+            )
           ))}
         </nav>
       </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, FileText, CreditCard, Users, Settings, HelpCircle, LogOut, BookOpen, MessageCircle, PanelLeft, Sun, Moon, Package, TrendingUp, Wallet, Briefcase, Clock, CalendarDays } from 'lucide-react';
+import { LayoutDashboard, FileText, CreditCard, Users, Settings, HelpCircle, LogOut, BookOpen, MessageCircle, PanelLeft, Sun, Moon, Package, TrendingUp, Wallet, Briefcase, Clock, CalendarDays, ChevronDown } from 'lucide-react';
 import clsx from 'clsx';
 import { useLayout } from '../../context/LayoutContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -14,19 +14,38 @@ const TopBar = () => {
   const navItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
     { icon: BookOpen, label: 'Sales Notebook', path: '/sales' },
-    { icon: FileText, label: 'Invoices', path: '/invoices' },
-    { icon: CreditCard, label: 'Payments', path: '/payments' },
-    { icon: Wallet, label: 'Wallet & Billing', path: '/billing' },
-    { icon: Users, label: 'Clients', path: '/clients' },
-    { icon: Package, label: 'Products', path: '/products' },
-    { icon: Briefcase, label: 'Services', path: '/services' },
-    { icon: Clock, label: 'Schedule', path: '/availability' },
-    { icon: CalendarDays, label: 'Bookings', path: '/bookings' },
-    { icon: TrendingUp, label: 'Analytics', path: '/analytics' },
-    { icon: MessageCircle, label: 'Integrations', path: '/integrations' },
-    { icon: Settings, label: 'Settings', path: '/settings' },
+    {
+      label: 'Finances',
+      icon: Wallet,
+      children: [
+        { icon: FileText, label: 'Invoices', path: '/invoices' },
+        { icon: CreditCard, label: 'Payments', path: '/payments' },
+        { icon: Wallet, label: 'Wallet & Billing', path: '/billing' },
+      ]
+    },
+    {
+      label: 'Workspace',
+      icon: Briefcase,
+      children: [
+        { icon: Users, label: 'Clients', path: '/clients' },
+        { icon: Briefcase, label: 'Services', path: '/services' },
+        { icon: Package, label: 'Products', path: '/products' },
+        { icon: Clock, label: 'Schedule', path: '/availability' },
+        { icon: CalendarDays, label: 'Bookings', path: '/bookings' },
+      ]
+    },
+    {
+      label: 'System',
+      icon: Settings,
+      children: [
+        { icon: TrendingUp, label: 'Analytics', path: '/analytics' },
+        { icon: MessageCircle, label: 'Integrations', path: '/integrations' },
+        { icon: Settings, label: 'Settings', path: '/settings' },
+      ]
+    },
     { icon: HelpCircle, label: 'Help', path: '/help' },
   ];
+
 
   return (
     <header className="w-full bg-white border-b border-gray-100 sticky top-0 z-50 hidden md:block">
@@ -39,23 +58,54 @@ const TopBar = () => {
           </div>
 
           {/* Desktop nav */}
-          <nav className="flex flex-1 items-center gap-1 mx-6 overflow-x-auto scrollbar-hide py-1 mask-linear-edges">
+          <nav className="flex flex-1 items-center gap-1 mx-6 pt-1 pb-2">
             {navItems.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                className={({ isActive }) =>
-                  clsx(
-                    'flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all duration-200 font-medium text-[13px] whitespace-nowrap shrink-0',
-                    isActive
-                      ? 'text-green-700 bg-green-50'
-                      : 'text-gray-500 hover:text-dark hover:bg-gray-50'
-                  )
-                }
-              >
-                <item.icon size={15} />
-                <span>{item.label}</span>
-              </NavLink>
+              item.children ? (
+                <div key={item.label} className="relative group shrink-0">
+                  <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all duration-200 font-medium text-[13px] whitespace-nowrap text-gray-500 hover:text-dark hover:bg-gray-50">
+                    <item.icon size={15} />
+                    <span>{item.label}</span>
+                    <ChevronDown size={14} className="ml-0.5 opacity-50 group-hover:rotate-180 transition-transform duration-200" />
+                  </button>
+                  <div className="absolute left-0 top-full pt-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 min-w-[200px]">
+                    <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-1.5 flex flex-col gap-0.5">
+                      {item.children.map((child) => (
+                        <NavLink
+                          key={child.path}
+                          to={child.path}
+                          className={({ isActive }) =>
+                            clsx(
+                              'flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 font-medium text-[13px] whitespace-nowrap',
+                              isActive
+                                ? 'text-green-700 bg-green-50'
+                                : 'text-gray-500 hover:text-dark hover:bg-gray-50'
+                            )
+                          }
+                        >
+                          <child.icon size={15} />
+                          <span>{child.label}</span>
+                        </NavLink>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  className={({ isActive }) =>
+                    clsx(
+                      'flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all duration-200 font-medium text-[13px] whitespace-nowrap shrink-0',
+                      isActive
+                        ? 'text-green-700 bg-green-50'
+                        : 'text-gray-500 hover:text-dark hover:bg-gray-50'
+                    )
+                  }
+                >
+                  <item.icon size={15} />
+                  <span>{item.label}</span>
+                </NavLink>
+              )
             ))}
           </nav>
 

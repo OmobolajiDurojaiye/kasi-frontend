@@ -16,6 +16,8 @@ const Dashboard = () => {
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showReminders, setShowReminders] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     if (user?.is_admin) {
@@ -135,6 +137,13 @@ const Dashboard = () => {
       return `Good evening, ${name}!`;
   };
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentInvoices = invoices.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(invoices.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
+
   if (loading) {
     return (
       <div className="space-y-8">
@@ -226,7 +235,7 @@ const Dashboard = () => {
                             <p className="text-xs text-gray-400">Create your first invoice to see it here.</p>
                         </td></tr>
                     ) : (
-                        invoices.map((invoice) => (
+                        currentInvoices.map((invoice) => (
                         <tr key={invoice.id} className="group hover:bg-gray-50 transition-colors">
                             <td className="py-3 pl-3">
                                 <input type="checkbox" className="rounded border-gray-300 text-green-600 focus:ring-green-500" />
@@ -252,6 +261,60 @@ const Dashboard = () => {
                 </tbody>
             </table>
         </div>
+        
+        {/* Pagination Controls */}
+        {!loading && invoices.length > 0 && (
+          <div className="flex items-center justify-between mt-4">
+            <div className="text-sm text-gray-500">
+              Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, invoices.length)} of {invoices.length} results
+            </div>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="px-3 py-1.5 rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Previous
+              </button>
+              
+              <div className="flex items-center gap-1 mx-2">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                  // Basic rendering for page numbers with some truncation logic for large tables (optional, but good for robust UX)
+                  if (
+                    page === 1 || 
+                    page === totalPages || 
+                    (page >= currentPage - 1 && page <= currentPage + 1)
+                  ) {
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-medium transition-colors ${
+                          currentPage === page 
+                            ? 'bg-primary text-white shadow-sm shadow-green-200' 
+                            : 'text-gray-600 hover:bg-gray-50'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  } else if (page === currentPage - 2 || page === currentPage + 2) {
+                    return <span key={page} className="text-gray-400">...</span>;
+                  }
+                  return null;
+                })}
+              </div>
+
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1.5 rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

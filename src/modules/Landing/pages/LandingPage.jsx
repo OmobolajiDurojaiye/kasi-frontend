@@ -4,6 +4,7 @@ import { Bot, MessageSquare, Receipt, Calendar, CreditCard, ChevronRight, CheckC
 import clsx from 'clsx';
 import { useTheme } from '../../../context/ThemeContext';
 import { useAuth } from '../../../context/AuthContext';
+import api from '../../../api/axios';
 
 // Simple nav structure
 const NAV_LINKS = [
@@ -19,6 +20,26 @@ const LandingPage = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [themeOpen, setThemeOpen] = useState(false);
+  
+  // Waitlist State
+  const [waitlistForm, setWaitlistForm] = useState({ name: '', email: '', phone_number: '', instagram_handle: '' });
+  const [waitlistLoading, setWaitlistLoading] = useState(false);
+  const [waitlistSuccess, setWaitlistSuccess] = useState(false);
+  const [waitlistError, setWaitlistError] = useState('');
+
+  const handleWaitlistSubmit = async (e) => {
+    e.preventDefault();
+    setWaitlistLoading(true);
+    setWaitlistError('');
+    try {
+      await api.post('/api/auth/waitlist', waitlistForm);
+      setWaitlistSuccess(true);
+    } catch (err) {
+      setWaitlistError(err.response?.data?.message || 'Failed to join waitlist. Please try again.');
+    } finally {
+      setWaitlistLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (user && !loading) {
@@ -360,19 +381,143 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* ===== BOTTOM CTA & FOOTER ===== */}
-      <section className="py-24 bg-white dark:bg-bg-surface text-center relative overflow-hidden transition-colors">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-green-50/50 dark:to-green-900/10" />
-        <div className="max-w-4xl mx-auto px-4 relative z-10">
-          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-8 tracking-tight">
-            Ready to hire your AI employee?
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto">
-            Get 5 free credits when you sign up today. Watch Kasi close your first few deals entirely on autopilot.
-          </p>
-          <Link to="/signup" className="inline-flex items-center gap-2 px-10 py-5 bg-green-600 hover:bg-green-700 text-white rounded-full font-bold text-xl transition-all shadow-xl shadow-green-600/30 hover:scale-105 active:scale-95">
-            Create Free Account <ChevronRight size={24} />
-          </Link>
+      {/* ===== WHATSAPP VIP BETA (REPLACES BOTTOM CTA) ===== */}
+      <section className="py-24 bg-green-900 text-white relative overflow-hidden transition-colors">
+        <div className="absolute inset-0 bg-[url('/images/noise.png')] opacity-10 mix-blend-overlay pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] opacity-20 pointer-events-none">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-400 rounded-full blur-[120px]" />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 relative z-10 flex flex-col xl:flex-row items-center gap-16">
+          
+          <div className="flex-1 space-y-8 text-center xl:text-left">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white text-sm font-semibold mb-2">
+              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+              WhatsApp VIP Beta 🚀
+            </div>
+            
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 tracking-tight leading-[1.1]">
+              Stop Losing Customers to <span className="text-green-400">"Check DM"</span>
+            </h2>
+            
+            <p className="text-xl text-green-100/80 max-w-2xl mx-auto xl:mx-0 leading-relaxed">
+              Kasi is your 24/7 AI employee that handles orders, answers FAQs, and sends invoices—so you can finally sleep.
+            </p>
+
+            <div className="space-y-4 pt-4 hidden xl:block">
+               <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                 <div className="p-2 bg-white/10 rounded-xl text-green-300 shadow-inner mt-1">
+                   <MessageSquare size={20} />
+                 </div>
+                 <div>
+                   <h4 className="font-bold text-lg mb-1">Automate your DMs</h4>
+                   <p className="text-green-100/70 text-sm">No more answering "How much?" 100x a day.</p>
+                 </div>
+               </div>
+               <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                 <div className="p-2 bg-white/10 rounded-xl text-green-300 shadow-inner mt-1">
+                   <Receipt size={20} />
+                 </div>
+                 <div>
+                   <h4 className="font-bold text-lg mb-1">Instant Invoicing</h4>
+                   <p className="text-green-100/70 text-sm">Close sales while you're offline flawlessly.</p>
+                 </div>
+               </div>
+               <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                 <div className="p-2 bg-white/10 rounded-xl text-green-300 shadow-inner mt-1">
+                   <CreditCard size={20} />
+                 </div>
+                 <div>
+                   <h4 className="font-bold text-lg mb-1">Naira-Ready Architecture</h4>
+                   <p className="text-green-100/70 text-sm">Built specifically for the way we trade in Nigeria.</p>
+                 </div>
+               </div>
+            </div>
+          </div>
+
+          <div className="w-full max-w-md bg-white dark:bg-bg-surface p-8 rounded-3xl shadow-2xl relative border border-gray-100 dark:border-dark-border text-gray-900 dark:text-gray-100">
+            {waitlistSuccess ? (
+               <div className="text-center py-12">
+                 <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                   <CheckCircle2 size={40} />
+                 </div>
+                 <h3 className="text-2xl font-bold mb-3">You're on the list!</h3>
+                 <p className="text-gray-500 dark:text-gray-400">Keep an eye on your WhatsApp and email. We'll be rolling out invites very soon.</p>
+               </div>
+            ) : (
+               <form onSubmit={handleWaitlistSubmit} className="space-y-5">
+                 <div className="text-center mb-8">
+                   <h3 className="text-2xl font-bold mb-2">Join the Waitlist</h3>
+                   <p className="text-sm text-gray-500 dark:text-gray-400">
+                     We are currently at capacity for Telegram. We are opening exactly <strong>50 spots</strong> for Nigerian Instagram & WhatsApp vendors for early access.
+                   </p>
+                 </div>
+
+                 {waitlistError && (
+                   <div className="p-3 bg-red-50 text-red-600 text-sm rounded-xl border border-red-100 text-center font-medium">
+                     {waitlistError}
+                   </div>
+                 )}
+
+                 <div className="space-y-4">
+                   <div className="space-y-1">
+                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wider pl-1">Name</label>
+                     <input 
+                       required
+                       type="text" 
+                       placeholder="e.g. Bolaji"
+                       className="w-full px-4 py-3 bg-gray-50 dark:bg-bg-main border border-gray-200 dark:border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all dark:text-white"
+                       value={waitlistForm.name}
+                       onChange={e => setWaitlistForm({...waitlistForm, name: e.target.value})}
+                     />
+                   </div>
+                   <div className="space-y-1">
+                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wider pl-1">WhatsApp Number</label>
+                     <input 
+                       required
+                       type="tel" 
+                       placeholder="e.g. 08012345678"
+                       className="w-full px-4 py-3 bg-gray-50 dark:bg-bg-main border border-gray-200 dark:border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all dark:text-white"
+                       value={waitlistForm.phone_number}
+                       onChange={e => setWaitlistForm({...waitlistForm, phone_number: e.target.value})}
+                     />
+                   </div>
+                   <div className="space-y-1">
+                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wider pl-1">Email</label>
+                     <input 
+                       required
+                       type="email" 
+                       placeholder="you@email.com"
+                       className="w-full px-4 py-3 bg-gray-50 dark:bg-bg-main border border-gray-200 dark:border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all dark:text-white"
+                       value={waitlistForm.email}
+                       onChange={e => setWaitlistForm({...waitlistForm, email: e.target.value})}
+                     />
+                   </div>
+                   <div className="space-y-1">
+                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wider pl-1">Instagram Handle (Optional)</label>
+                     <input 
+                       type="text" 
+                       placeholder="@yourbusiness"
+                       className="w-full px-4 py-3 bg-gray-50 dark:bg-bg-main border border-gray-200 dark:border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all dark:text-white"
+                       value={waitlistForm.instagram_handle}
+                       onChange={e => setWaitlistForm({...waitlistForm, instagram_handle: e.target.value})}
+                     />
+                   </div>
+                 </div>
+
+                 <button 
+                   type="submit" 
+                   disabled={waitlistLoading}
+                   className="w-full py-4 mt-2 bg-green-600 hover:bg-green-700 disabled:opacity-70 disabled:cursor-not-allowed text-white rounded-xl font-bold text-lg shadow-lg shadow-green-600/30 transition-all flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95"
+                 >
+                   {waitlistLoading ? "Joining Waitlist..." : "Secure My Spot"}
+                 </button>
+               </form>
+            )}
+            
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500/20 to-transparent blur-2xl rounded-tr-3xl -z-10 pointer-events-none" />
+          </div>
+
         </div>
       </section>
 

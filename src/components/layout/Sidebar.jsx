@@ -49,6 +49,7 @@ const Sidebar = ({ onWidthChange }) => {
     { icon: FileText, label: 'Global Invoices', path: '/admin/invoices', roles: ['Super Admin', 'Finance Admin'] },
     { icon: CreditCard, label: 'Platform Transactions', path: '/admin/transactions', roles: ['Super Admin', 'Finance Admin'] },
     { icon: Radio, label: 'System Broadcasts', path: '/admin/broadcasts', roles: ['Super Admin', 'Support Admin'] },
+    { icon: Clock, label: 'Beta Waitlist', path: '/admin/waitlist', roles: ['Super Admin'] },
     { icon: Shield, label: 'Staff Management', path: '/admin/staff', roles: ['Super Admin'] },
     { icon: Settings, label: 'Settings', path: '/settings', roles: ['Super Admin', 'Finance Admin', 'Support Admin'] },
   ];

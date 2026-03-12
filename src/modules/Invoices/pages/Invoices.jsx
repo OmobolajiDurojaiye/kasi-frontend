@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Plus, Search, Filter, MoreHorizontal, FileText, Download, Share2, Eye, Trash, CheckCircle } from 'lucide-react';
 import api from '../../../api/axios';
 import { useAuth } from '../../../context/AuthContext';
+import useNetwork from '../../../hooks/useNetwork';
+import { getLocalInvoices, addInvoiceToLocal } from '../../../db/db';
 import Button from '../../../components/ui/Button';
 import { useToast } from '../../../context/ToastContext';
 import DeleteConfirmModal from '../../../components/ui/DeleteConfirmModal';
@@ -243,6 +245,7 @@ const Invoices = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState('All');
     const [selectedInvoice, setSelectedInvoice] = useState(null);
+    const isOnline = useNetwork();
 
     useEffect(() => {
         if (token) {
@@ -252,11 +255,23 @@ const Invoices = () => {
 
     const fetchInvoices = async () => {
         try {
-            const response = await api.get('/api/invoices/');
-            setInvoices(response.data);
+            let data = [];
+            if (isOnline) {
+                try {
+                    const response = await api.get('/api/invoices/');
+                    data = response.data;
+                    data.forEach(async (inv) => await addInvoiceToLocal(inv));
+                } catch (apiError) {
+                    console.error('API Error, falling back to local DB:', apiError);
+                    data = await getLocalInvoices();
+                }
+            } else {
+                data = await getLocalInvoices();
+            }
+            setInvoices(data);
         } catch (error) {
             console.error('Error fetching invoices:', error);
-            if (error.response && error.response.status === 401) {
+            if (error?.response?.status === 401) {
                 logout();
             }
         } finally {
@@ -283,6 +298,11 @@ const Invoices = () => {
 
     return (
         <div className="space-y-8">
+            {!isOnline && (
+                <div className="bg-yellow-50 text-yellow-800 px-4 py-3 rounded-xl text-sm font-medium flex items-center justify-center shadow-sm border border-yellow-200">
+                    Offline Mode. Showing cached invoices. New changes will sync when you reconnect.
+                </div>
+            )}
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 w-full">
                 <div className="w-full">

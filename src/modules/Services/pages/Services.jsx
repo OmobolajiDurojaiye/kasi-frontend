@@ -3,11 +3,13 @@ import { Plus, Search, MapPin, Clock, Edit2, Trash2, X, AlertTriangle } from 'lu
 import api from '../../../api/axios';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
+import useNetwork from '../../../hooks/useNetwork';
 import { formatCurrency } from '../../../utils/formatters';
 
 const Services = () => {
   const { token } = useAuth();
-  const { showToast } = useToast();
+  const { addToast } = useToast();
+  const isOnline = useNetwork();
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,10 +33,15 @@ const Services = () => {
 
   const fetchServices = async () => {
     try {
+      setLoading(true);
+      if (!isOnline) {
+          setLoading(false);
+          return;
+      }
       const response = await api.get('/api/services/');
       setServices(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
-      showToast('error', 'Failed to fetch services');
+      addToast('Failed to fetch services', 'error');
     } finally {
       setLoading(false);
     }
@@ -46,16 +53,16 @@ const Services = () => {
     try {
       if (editingService) {
         await api.put(`/api/services/${editingService.id}`, formData);
-        showToast('success', 'Service updated successfully');
+        addToast('Service updated successfully', 'success');
       } else {
         await api.post('/api/services/', formData);
-        showToast('success', 'Service created successfully');
+        addToast('Service created successfully', 'success');
       }
       setIsModalOpen(false);
       setEditingService(null);
       fetchServices();
     } catch (error) {
-      showToast('error', error.response?.data?.error || 'Failed to save service');
+      addToast(error.response?.data?.error || 'Failed to save service', 'error');
     } finally {
       setIsSaving(false);
     }
@@ -70,11 +77,11 @@ const Services = () => {
     setIsDeleting(true);
     try {
       await api.delete(`/api/services/${serviceToDelete.id}`);
-      showToast('success', 'Service deleted successfully');
+      addToast('Service deleted successfully', 'success');
       setServiceToDelete(null);
       fetchServices();
     } catch (error) {
-      showToast('error', 'Failed to delete service');
+      addToast('Failed to delete service', 'error');
     } finally {
       setIsDeleting(false);
     }
@@ -107,6 +114,11 @@ const Services = () => {
 
   return (
     <div className="space-y-6">
+      {!isOnline && (
+        <div className="bg-yellow-50 text-yellow-800 px-4 py-3 rounded-xl text-sm font-medium flex items-center justify-center shadow-sm border border-yellow-200">
+          Services list is unavailable in Offline Mode.
+        </div>
+      )}
       <div className="flex justify-between items-center pb-4 border-b border-gray-100">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Services</h1>

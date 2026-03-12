@@ -6,6 +6,8 @@ import { Search, User, Users, Mail, Phone, MapPin, FileText, Eye, ShoppingBag } 
 import Button from '../../../components/ui/Button';
 import DetailModal from '../../../components/ui/DetailModal';
 import { TableSkeleton } from '../../../components/ui/Skeleton';
+import useNetwork from '../../../hooks/useNetwork';
+import { getLocalInvoices, getLocalCustomers, addCustomerToLocal } from '../../../db/db';
 
 /* ── Client Detail Modal Content ──────────────────── */
 const ClientDetail = ({ client, invoices }) => {
@@ -98,6 +100,7 @@ const ClientDetail = ({ client, invoices }) => {
 const Clients = () => {
     const { token, logout } = useAuth();
     const { addToast } = useToast();
+    const isOnline = useNetwork();
     const [clients, setClients] = useState([]);
     const [invoices, setInvoices] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -113,8 +116,14 @@ const Clients = () => {
 
     const fetchClients = async () => {
         try {
+            if (!isOnline) {
+                setClients(await getLocalCustomers() || []);
+                return;
+            }
             const response = await api.get('/api/invoices/customers');
-            setClients(response.data);
+            const data = response.data;
+            setClients(data);
+            data.forEach(async (c) => await addCustomerToLocal(c));
         } catch (error) {
             console.error('Error fetching clients:', error);
             if (error.response && error.response.status === 401) {
@@ -129,6 +138,10 @@ const Clients = () => {
 
     const fetchInvoices = async () => {
         try {
+            if (!isOnline) {
+                setInvoices(await getLocalInvoices() || []);
+                return;
+            }
             const response = await api.get('/api/invoices/');
             setInvoices(response.data);
         } catch (error) {
@@ -144,6 +157,11 @@ const Clients = () => {
 
     return (
         <div className="space-y-8">
+            {!isOnline && (
+                <div className="bg-yellow-50 text-yellow-800 px-4 py-3 rounded-xl text-sm font-medium flex items-center justify-center shadow-sm border border-yellow-200">
+                    Offline Mode. Showing locally saved clients.
+                </div>
+            )}
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>

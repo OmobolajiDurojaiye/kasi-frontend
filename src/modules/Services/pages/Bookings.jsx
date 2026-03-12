@@ -5,10 +5,12 @@ import { useToast } from '../../../context/ToastContext';
 import { CalendarDays, Clock, MapPin, User, CheckCircle, XCircle, ChevronDown, ListTodo } from 'lucide-react';
 import clsx from 'clsx';
 import { formatCurrency } from '../../../utils/formatters';
+import useNetwork from '../../../hooks/useNetwork';
 
 const Bookings = () => {
   const { token } = useAuth();
-  const { showToast } = useToast();
+  const { addToast } = useToast();
+  const isOnline = useNetwork();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState(null);
@@ -19,10 +21,15 @@ const Bookings = () => {
 
   const fetchBookings = async () => {
     try {
+      setLoading(true);
+      if (!isOnline) {
+          setLoading(false);
+          return;
+      }
       const response = await api.get('/api/services/bookings');
       setBookings(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
-      showToast('error', 'Failed to fetch bookings');
+      addToast('Failed to fetch bookings', 'error');
     } finally {
       setLoading(false);
     }
@@ -34,10 +41,10 @@ const Bookings = () => {
       await api.put(`/api/services/bookings/${id}/status`, 
         { status: newStatus }
       );
-      showToast('success', `Booking marked as ${newStatus}`);
+      addToast(`Booking marked as ${newStatus}`, 'success');
       fetchBookings();
     } catch (error) {
-      showToast('error', 'Failed to update status');
+      addToast('Failed to update status', 'error');
     } finally {
       setUpdatingId(null);
     }
@@ -67,6 +74,11 @@ const Bookings = () => {
 
   return (
     <div className="space-y-6">
+      {!isOnline && (
+        <div className="bg-yellow-50 text-yellow-800 px-4 py-3 rounded-xl text-sm font-medium flex items-center justify-center shadow-sm border border-yellow-200">
+          Bookings list is unavailable in Offline Mode.
+        </div>
+      )}
       <div className="flex justify-between items-center pb-4 border-b border-gray-100">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Appointments</h1>

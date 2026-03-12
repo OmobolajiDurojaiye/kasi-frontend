@@ -3,6 +3,7 @@ import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tool
 import { Calendar, Info, Package, CreditCard, Clock } from 'lucide-react';
 import { getAnalyticsData } from '../../../api/analytics';
 import { AnalyticsSkeleton } from '../../../components/ui/Skeleton';
+import useNetwork from '../../../hooks/useNetwork';
 
 const formatNaira = (amount) => {
   return new Intl.NumberFormat('en-NG', {
@@ -16,12 +17,17 @@ const formatNaira = (amount) => {
 const Analytics = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const isOnline = useNetwork();
 
   useEffect(() => {
     let isMounted = true;
     const fetchData = async () => {
       try {
         setLoading(true);
+        if (!isOnline) {
+            setLoading(false);
+            return;
+        }
         console.log("Fetching analytics...");
         const response = await getAnalyticsData();
         console.log("Analytics response:", response);
@@ -42,7 +48,20 @@ const Analytics = () => {
     };
     fetchData();
     return () => { isMounted = false; };
-  }, []);
+  }, [isOnline]);
+
+  if (!isOnline) {
+    return (
+      <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6 min-h-[calc(100vh-theme(spacing.16))] relative">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Analytics</h1>
+        </div>
+        <div className="bg-yellow-50 text-yellow-800 px-4 py-3 rounded-xl text-sm font-medium flex items-center justify-center shadow-sm border border-yellow-200">
+            Analytics are dynamically calculated and are unavailable in Offline Mode. Please reconnect to the internet to view your live stats.
+        </div>
+      </div>
+    );
+  }
 
   if (loading || !data) {
     return (

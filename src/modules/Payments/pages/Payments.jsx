@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import api from '../../../api/axios';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
+import useNetwork from '../../../hooks/useNetwork';
+import { getLocalInvoices, addInvoiceToLocal } from '../../../db/db';
 import { Search, CheckCircle, Calendar, ArrowUpRight, Eye, CreditCard } from 'lucide-react';
 import Button from '../../../components/ui/Button';
 import DetailModal from '../../../components/ui/DetailModal';
@@ -87,6 +89,7 @@ const Payments = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedPayment, setSelectedPayment] = useState(null);
+    const isOnline = useNetwork();
 
     useEffect(() => {
         if (token) {
@@ -96,8 +99,20 @@ const Payments = () => {
 
     const fetchPayments = async () => {
         try {
-            const response = await api.get('/api/invoices/');
-            const paidInvoices = response.data.filter(inv => inv.status === 'Paid');
+            let data = [];
+            if (isOnline) {
+                try {
+                    const response = await api.get('/api/invoices/');
+                    data = response.data;
+                    data.forEach(async (inv) => await addInvoiceToLocal(inv));
+                } catch (apiError) {
+                    console.error('API Error, falling back to local DB:', apiError);
+                    data = await getLocalInvoices();
+                }
+            } else {
+                data = await getLocalInvoices();
+            }
+            const paidInvoices = data.filter(inv => inv.status === 'Paid');
             setPayments(paidInvoices);
         } catch (error) {
             console.error('Error fetching payments:', error);
@@ -120,6 +135,11 @@ const Payments = () => {
 
     return (
         <div className="space-y-8">
+            {!isOnline && (
+                <div className="bg-yellow-50 text-yellow-800 px-4 py-3 rounded-xl text-sm font-medium flex items-center justify-center shadow-sm border border-yellow-200">
+                    You are currently offline. Showing cached payment data.
+                </div>
+            )}
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>

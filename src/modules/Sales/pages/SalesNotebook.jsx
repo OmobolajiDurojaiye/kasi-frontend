@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
 import api from '../../../api/axios';
+import useNetwork from '../../../hooks/useNetwork';
+import { getLocalInvoices, addInvoiceToLocal, addToSyncQueue } from '../../../db/db';
 import { Plus, Search, Filter, Calendar, UploadCloud, FileText, Eye } from 'lucide-react';
 import Button from '../../../components/ui/Button';
 import DetailModal from '../../../components/ui/DetailModal';
@@ -95,6 +97,7 @@ const SalesNotebook = () => {
     const [loading, setLoading] = useState(true);
     const [showQuickAdd, setShowQuickAdd] = useState(false);
     const [selectedSale, setSelectedSale] = useState(null);
+    const isOnline = useNetwork();
 
     // Quick Add Form State
     const [quickForm, setQuickForm] = useState({
@@ -110,8 +113,20 @@ const SalesNotebook = () => {
 
     const fetchInvoices = async () => {
         try {
-            const response = await api.get('/api/invoices/');
-            setInvoices(response.data);
+            let data = [];
+            if (isOnline) {
+                try {
+                    const response = await api.get('/api/invoices/');
+                    data = response.data;
+                    data.forEach(async (inv) => await addInvoiceToLocal(inv));
+                } catch (e) {
+                    console.error('API fail, reading local', e);
+                    data = await getLocalInvoices();
+                }
+            } else {
+                data = await getLocalInvoices();
+            }
+            setInvoices(data);
         } catch (error) {
             console.error('Error loading notebook:', error);
         } finally {
@@ -123,6 +138,7 @@ const SalesNotebook = () => {
         e.preventDefault();
         try {
             const payload = {
+                customer: { name: quickForm.customer_name }, // For local UI rendering matching the shape
                 customer_name: quickForm.customer_name,
                 reference: `SALE-${Date.now().toString().slice(-6)}`,
                 date_issued: quickForm.date,
@@ -141,10 +157,20 @@ const SalesNotebook = () => {
                 ]
             };
 
-            await api.post('/api/invoices/', payload);
+            if (isOnline) {
+                await api.post('/api/invoices/', payload);
+                addToast('Sale recorded successfully!', 'success');
+                fetchInvoices();
+            } else {
+                // Save locally and add to sync queue
+                const localId = Date.now(); // Temp ID
+                await addInvoiceToLocal({ ...payload, id: localId });
+                await addToSyncQueue('CREATE_INVOICE', payload);
+                addToast('Saved offline. Will sync when connected.', 'info');
+                // Optimistically update UI
+                setInvoices((prev) => [{ ...payload, id: localId }, ...prev]);
+            }
 
-            addToast('Sale recorded successfully!', 'success');
-            fetchInvoices();
             setShowQuickAdd(false);
             setQuickForm({ ...quickForm, customer_name: '', amount: '' });
 
@@ -192,6 +218,12 @@ const SalesNotebook = () => {
 
     return (
         <div className="space-y-5">
+            {!isOnline && (
+                <div className="bg-yellow-50 text-yellow-800 px-4 py-3 rounded-xl text-sm font-medium flex items-center justify-center shadow-sm border border-yellow-200">
+                    Offline Mode. New sales will be saved locally and synced automatically when back online.
+                </div>
+            )}
+            
             {/* Header & Stats */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 w-full">
                 <div className="w-full">

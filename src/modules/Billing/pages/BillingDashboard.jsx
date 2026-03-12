@@ -3,6 +3,7 @@ import { Wallet, CreditCard, ArrowRight, ShieldCheck, Zap, AlertCircle, Trending
 import api from '../../../api/axios';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
+import useNetwork from '../../../hooks/useNetwork';
 
 // We can load Paystack dynamically when needed
 const loadPaystack = () => {
@@ -21,6 +22,7 @@ const loadPaystack = () => {
 const BillingDashboard = () => {
   const { user } = useAuth();
   const { addToast } = useToast();
+  const isOnline = useNetwork();
   
   const [balance, setBalance] = useState(0);
   const [packages, setPackages] = useState({});
@@ -35,6 +37,10 @@ const BillingDashboard = () => {
 
   const fetchWalletData = async () => {
     try {
+      if (!isOnline) {
+          setLoading(false);
+          return;
+      }
       const [walletRes, pkgsRes] = await Promise.all([
         api.get('/api/billing/wallet'),
         api.get('/api/billing/packages')
@@ -83,6 +89,11 @@ const BillingDashboard = () => {
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
+      {!isOnline && (
+        <div className="bg-yellow-50 text-yellow-800 px-4 py-3 rounded-xl text-sm font-medium flex items-center justify-center shadow-sm border border-yellow-200">
+          Billing & Wallet are dynamic and are unavailable in Offline Mode.
+        </div>
+      )}
       <div>
         <h1 className="text-2xl font-bold text-dark mb-1">Wallet & Billing</h1>
         <p className="text-gray-500 text-sm">Manage your Kasi Credits to keep your AI Sales Agent running.</p>

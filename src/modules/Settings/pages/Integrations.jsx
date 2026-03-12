@@ -4,10 +4,12 @@ import api from '../../../api/axios';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
 import WebhookSimulator from '../../DevTools/WebhookSimulator';
+import useNetwork from '../../../hooks/useNetwork';
 
 const Integrations = () => {
   const { token } = useAuth();
   const { addToast } = useToast();
+  const isOnline = useNetwork();
 
   // Telegram state
   const [telegramStatus, setTelegramStatus] = useState({ connected: false, bot: null });
@@ -21,6 +23,10 @@ const Integrations = () => {
 
   const fetchTelegramStatus = async () => {
     try {
+      if (!isOnline) {
+          setLoadingStatus(false);
+          return;
+      }
       const res = await api.get('/api/telegram/status');
       setTelegramStatus(res.data);
     } catch {
@@ -62,6 +68,11 @@ const Integrations = () => {
 
   return (
     <div className="space-y-6">
+      {!isOnline && (
+        <div className="bg-yellow-50 text-yellow-800 px-4 py-3 rounded-xl text-sm font-medium flex items-center justify-center shadow-sm border border-yellow-200">
+          Integrations are unavailable to manage in Offline Mode.
+        </div>
+      )}
       <div>
         <h1 className="text-2xl font-bold text-dark mb-1">Integrations</h1>
         <p className="text-gray-500 text-sm">Connect messaging platforms so the AI can respond to your customers automatically.</p>

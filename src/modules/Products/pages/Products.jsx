@@ -5,10 +5,12 @@ import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
 import { ProductGridSkeleton } from '../../../components/ui/Skeleton';
 import DeleteConfirmModal from '../../../components/ui/DeleteConfirmModal';
+import useNetwork from '../../../hooks/useNetwork';
 
 const Products = () => {
   const { token } = useAuth();
   const { addToast } = useToast();
+  const isOnline = useNetwork();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -32,6 +34,11 @@ const Products = () => {
 
   const fetchProducts = async () => {
     try {
+      setLoading(true);
+      if (!isOnline) {
+          setLoading(false);
+          return;
+      }
       // Add a timestamp to prevent browser caching
       const res = await api.get(`/api/products/?t=${Date.now()}`);
       setProducts(res.data);
@@ -122,6 +129,11 @@ const Products = () => {
 
   return (
     <div>
+      {!isOnline && (
+        <div className="bg-yellow-50 text-yellow-800 px-4 py-3 rounded-xl text-sm font-medium flex items-center justify-center shadow-sm border border-yellow-200 mb-6">
+          Products list is unavailable in Offline Mode.
+        </div>
+      )}
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>

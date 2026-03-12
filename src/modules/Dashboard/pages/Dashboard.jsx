@@ -7,6 +7,8 @@ import Button from '../../../components/ui/Button';
 import { DashboardSkeleton, TableSkeleton } from '../../../components/ui/Skeleton';
 import api from '../../../api/axios';
 import { useAuth } from '../../../context/AuthContext';
+import useNetwork from '../../../hooks/useNetwork';
+import { getLocalInvoices, addInvoiceToLocal } from '../../../db/db';
 
 import RemindersModal from '../components/RemindersModal';
 
@@ -18,6 +20,7 @@ const Dashboard = () => {
   const [showReminders, setShowReminders] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+  const isOnline = useNetwork();
 
   useEffect(() => {
     if (user?.is_admin) {
@@ -43,8 +46,24 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
-        const response = await api.get('/api/invoices/');
-        const data = response.data;
+        let data = [];
+        if (isOnline) {
+            try {
+                const response = await api.get('/api/invoices/');
+                data = response.data;
+                // Cache data locally
+                data.forEach(async (inv) => {
+                    await addInvoiceToLocal(inv);
+                });
+            } catch (apiError) {
+                console.error('API Error, falling back to local DB:', apiError);
+                data = await getLocalInvoices();
+            }
+        } else {
+            console.log("Offline mode: fetching invoices from local DB");
+            data = await getLocalInvoices();
+        }
+        
         setInvoices(data);
 
         // Calculate Stats
@@ -160,6 +179,12 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-8">
+      {!isOnline && (
+        <div className="bg-yellow-50 text-yellow-800 px-4 py-3 rounded-xl text-sm font-medium flex items-center justify-center shadow-sm border border-yellow-200">
+            You are currently offline. Showing cached data. Any new changes will sync automatically when you reconnect.
+        </div>
+      )}
+
       {/* Page Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 w-full">
         <div className="w-full">

@@ -4,6 +4,7 @@ import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
 import { Clock, Calendar, CheckCircle2 } from 'lucide-react';
 import clsx from 'clsx';
+import useNetwork from '../../../hooks/useNetwork';
 
 const DAYS_OF_WEEK = [
   'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
@@ -11,7 +12,8 @@ const DAYS_OF_WEEK = [
 
 const Availability = () => {
   const { token } = useAuth();
-  const { showToast } = useToast();
+  const { addToast } = useToast();
+  const isOnline = useNetwork();
   const [schedule, setSchedule] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -22,10 +24,15 @@ const Availability = () => {
 
   const fetchSchedule = async () => {
     try {
+      setLoading(true);
+      if (!isOnline) {
+          setLoading(false);
+          return;
+      }
       const response = await api.get('/api/services/schedule');
       setSchedule(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
-      showToast('error', 'Failed to fetch schedule');
+      addToast('Failed to fetch schedule', 'error');
     } finally {
       setLoading(false);
     }
@@ -41,9 +48,9 @@ const Availability = () => {
     setSaving(true);
     try {
       await api.post('/api/services/schedule', schedule);
-      showToast('success', 'Schedule saved successfully');
+      addToast('Schedule saved successfully', 'success');
     } catch (error) {
-      showToast('error', 'Failed to save schedule');
+      addToast('Failed to save schedule', 'error');
     } finally {
       setSaving(false);
     }
@@ -51,6 +58,11 @@ const Availability = () => {
 
   return (
     <div className="space-y-6 max-w-4xl">
+      {!isOnline && (
+        <div className="bg-yellow-50 text-yellow-800 px-4 py-3 rounded-xl text-sm font-medium flex items-center justify-center shadow-sm border border-yellow-200">
+          Availability settings are unavailable in Offline Mode.
+        </div>
+      )}
       <div className="flex justify-between items-center pb-4 border-b border-gray-100">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 tracking-tight">AI Schedule Hours</h1>

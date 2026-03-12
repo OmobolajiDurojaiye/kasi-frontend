@@ -4,19 +4,20 @@ import { useToast } from '../../../context/ToastContext';
 import { useTheme, THEMES } from '../../../context/ThemeContext';
 import Button from '../../../components/ui/Button';
 import api from '../../../api/axios';
-import { Save, Building, Phone, MapPin, CreditCard, Image as ImageIcon, Palette, User, Check, Brain } from 'lucide-react';
+import { Save, Building, Phone, MapPin, CreditCard, Image as ImageIcon, Palette, User, Check, Brain, History } from 'lucide-react';
+import ActivityLogsTable from '../components/ActivityLogsTable';
 
 /* ── Tab Button ───────────────────────────────────── */
 const TabButton = ({ active, icon: Icon, label, onClick }) => (
     <button
         onClick={onClick}
-        className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold rounded-xl transition-all
+        className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold rounded-xl transition-all whitespace-nowrap
             ${active
-                ? 'bg-primary text-white shadow-md shadow-green-200'
-                : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+                ? 'bg-primary text-white shadow-md shadow-green-200 dark:shadow-none'
+                : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200'
             }`}
     >
-        <Icon size={18} />
+        <Icon size={18} className="shrink-0" />
         {label}
     </button>
 );
@@ -123,11 +124,12 @@ const Settings = () => {
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-2 bg-white rounded-2xl p-2 shadow-sm border border-gray-100">
+            <div className="flex gap-2 bg-white dark:bg-gray-800/50 rounded-2xl p-2 shadow-sm border border-gray-100 dark:border-gray-700 overflow-x-auto scrollbar-hide">
                 <TabButton active={activeTab === 'profile'} icon={User} label="Profile" onClick={() => setActiveTab('profile')} />
                 <TabButton active={activeTab === 'billing'} icon={CreditCard} label="Billing" onClick={() => setActiveTab('billing')} />
                 <TabButton active={activeTab === 'ai_rules'} icon={Brain} label="AI Rules" onClick={() => setActiveTab('ai_rules')} />
                 <TabButton active={activeTab === 'appearance'} icon={Palette} label="Appearance" onClick={() => setActiveTab('appearance')} />
+                <TabButton active={activeTab === 'activity'} icon={History} label="Activity Logs" onClick={() => setActiveTab('activity')} />
             </div>
 
             {/* ── PROFILE TAB ─────────────────────── */}
@@ -406,6 +408,11 @@ const Settings = () => {
                         </p>
                     </div>
                 </div>
+            )}
+            
+            {/* ── ACTIVITY LOGS TAB ──────────────────── */}
+            {activeTab === 'activity' && (
+                <ActivityLogsTable />
             )}
         </div>
     );

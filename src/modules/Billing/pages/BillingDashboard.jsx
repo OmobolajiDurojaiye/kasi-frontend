@@ -58,10 +58,15 @@ const BillingDashboard = () => {
   const handleTopup = async (pkgId, pkgData) => {
     setProcessingPkg(pkgId);
     try {
+      const idempotencyKey = `init_${pkgId}_${Date.now()}`;
       // 1. Initialize Paystack
       const initRes = await api.post('/api/billing/initialize-topup', { 
         package_id: pkgId,
         callback_url: `${window.location.origin}/payment/callback`
+      }, {
+        headers: {
+          'Idempotency-Key': idempotencyKey
+        }
       });
       const { authorization_url, reference } = initRes.data;
       

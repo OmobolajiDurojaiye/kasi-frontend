@@ -39,6 +39,10 @@ const PaymentCallback = () => {
       const res = await api.post('/api/billing/verify-topup', {
         reference,
         package_id: packageId
+      }, {
+        headers: {
+          'Idempotency-Key': `verify_${reference}`
+        }
       });
       
       setStatus('success');

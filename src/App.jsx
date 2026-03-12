@@ -29,6 +29,7 @@ import AdminStaff from './modules/Admin/pages/AdminStaff';
 import AdminBroadcasts from './modules/Admin/pages/AdminBroadcasts';
 import AdminTransactions from './modules/Admin/pages/AdminTransactions';
 import AdminWaitlist from './modules/Admin/pages/AdminWaitlist';
+import AdminAuditLogs from './modules/Admin/pages/AdminAuditLogs';
 import BillingDashboard from './modules/Billing/pages/BillingDashboard';
 import PaymentCallback from './modules/Billing/pages/PaymentCallback';
 import Services from './modules/Services/pages/Services';
@@ -165,6 +166,11 @@ function App() {
               <Route path="/admin/waitlist" element={
                 <ProtectedRoute allowedRoles={['Super Admin']}>
                   <AdminWaitlist />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/audit-logs" element={
+                <ProtectedRoute allowedRoles={['Super Admin', 'Support Admin']}>
+                  <AdminAuditLogs />
                 </ProtectedRoute>
               } />
               <Route path="/admin/broadcasts" element={

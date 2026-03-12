@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { BarChart3, FileText, CreditCard, Users, Settings, HelpCircle, LogOut, BookOpen, MessageCircle, PanelTop, Sun, Moon, Package, ChevronsLeft, ChevronsRight, TrendingUp, Shield, Radio, Wallet, Briefcase, Clock, CalendarDays, ChevronDown } from 'lucide-react';
+import { BarChart3, FileText, CreditCard, Users, Settings, HelpCircle, LogOut, BookOpen, MessageCircle, PanelTop, Sun, Moon, Package, ChevronsLeft, ChevronsRight, TrendingUp, Shield, Radio, Wallet, Briefcase, Clock, CalendarDays, ChevronDown, ShieldAlert } from 'lucide-react';
 import clsx from 'clsx';
 import { useLayout } from '../../context/LayoutContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -76,6 +76,7 @@ const Sidebar = ({ onWidthChange }) => {
     { icon: CreditCard, label: 'Platform Transactions', path: '/admin/transactions', roles: ['Super Admin', 'Finance Admin'] },
     { icon: Radio, label: 'System Broadcasts', path: '/admin/broadcasts', roles: ['Super Admin', 'Support Admin'] },
     { icon: Clock, label: 'Beta Waitlist', path: '/admin/waitlist', roles: ['Super Admin'] },
+    { icon: ShieldAlert, label: 'Audit Logs', path: '/admin/audit-logs', roles: ['Super Admin', 'Support Admin'] },
     { icon: Shield, label: 'Staff Management', path: '/admin/staff', roles: ['Super Admin'] },
     { icon: Settings, label: 'Settings', path: '/settings', roles: ['Super Admin', 'Finance Admin', 'Support Admin'] },
   ];
